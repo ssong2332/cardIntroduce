@@ -1,8 +1,15 @@
-# CHANGELOG — {{PROJECT_NAME}}
+# CHANGELOG — 카드 인트로듀스 (cardIntroduce)
 
 > 소유자: docs | 형식: [Keep a Changelog](https://keepachangelog.com/ko/) 축약. 최신이 위.
 
 ## [Unreleased]
 
 ### Added
-- {{DATE}} 프로젝트 초기화 (start_coding 템플릿)
+- 2026-09-07 순수 포커 테이블 및 멋쟁이사자처럼 정통 카드 딜링 시스템 리뉴얼
+  - 테이블 외 외부 프레임 및 헤더 배너 완전 제거 (100% 포커 펠트 풀스크린)
+  - 기존 점선/와이어프레임 박스 제거 및 상단 실물 3D 카드 뭉치 스택 구축
+  - 고해상도 멋쟁이사자처럼 공식 포커 카드 뒷면(사자 엠블럼/HACK YOUR LIFE) 적용
+  - 중앙 스포트라이트에서 뒷면으로 날아와 180도 Y축 회전하여 앞면으로 뒤집히는 3D 플립 애니메이션 구현
+  - 카드 등급 디자인 차별화 (팀장: Gold King K, 선발인원: Silver Ace A, 일반팀원: Classic Ivory J/Q/10)
+  - 임의의 팀명 제거 및 중립적인 [1팀], [2팀], [3팀] 명칭 적용
+  - 팀장 ➔ 선발인원 ➔ 일반팀원 순차 행 배치 및 팀별 대형 쇼케이스 기능 구현

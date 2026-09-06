@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>멋쟁이사자처럼 포커 테이블 팀 빌딩</title>
+  <meta name="description" content="세미 라운드 포커 테이블 딜러 카드 오픈 & 3개 팀 빌딩 쇼케이스">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Global SVG Defs for Deck Stack & Card Back Pattern (Always Preserved Even on Reset) -->
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+    <defs>
+      <pattern id="likelion-diag-pattern" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="18" height="18" fill="#141416"/>
+        <image href="/src/assets/likelion_logo_official.png" x="2" y="2" width="14" height="14" preserveAspectRatio="xMidYMid meet" opacity="0.38"/>
+        <circle cx="1" cy="1" r="0.8" fill="#FF7710" opacity="0.5"/>
+      </pattern>
+      <linearGradient id="back-gold-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#fed7aa"/>
+        <stop offset="50%" stop-color="#FF7710"/>
+        <stop offset="100%" stop-color="#9a3412"/>
+      </linearGradient>
+      <radialGradient id="back-medallion-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#241e1b"/>
+        <stop offset="60%" stop-color="#18181c"/>
+        <stop offset="100%" stop-color="#121214"/>
+      </radialGradient>
+    </defs>
+  </svg>
+
+  <!-- Full Viewport Table Stage with Side HUD Margin -->
+  <main class="table-viewport">
+    <div class="poker-felt-table">
+      <div class="felt-surface">
+        <div class="felt-watermark-wrap">
+          <div class="felt-ring-graphic"></div>
+          <div class="felt-text-watermark">LIKELION</div>
+        </div>
+
+        <!-- 3D Card Stack (Inside felt, matching exact card dimensions) -->
+        <div class="table-deck-anchor">
+          <div class="real-deck-stack" id="deck-stack" title="멋쟁이사자처럼 덱 뭉치">
+            <div class="deck-stack-card"><svg class="card-back-svg-art" viewBox="0 0 100 145" preserveAspectRatio="none"><rect width="100" height="145" rx="5" fill="#121214"/><rect x="4" y="4" width="92" height="137" rx="4" fill="url(#likelion-diag-pattern)"/><rect x="3.5" y="3.5" width="93" height="138" rx="4.5" fill="none" stroke="#FF7710" stroke-width="1.2"/><circle cx="50" cy="72.5" r="20" fill="#18181c" stroke="#FF7710" stroke-width="1.2"/><image href="/src/assets/likelion_logo_official.png" x="37" y="60" width="26" height="20"/><text x="50" y="84" font-family="'Montserrat', sans-serif" font-weight="900" font-size="4.2" fill="#ffffff" text-anchor="middle">LIKE LION</text></svg></div>
+            <div class="deck-stack-card"><svg class="card-back-svg-art" viewBox="0 0 100 145" preserveAspectRatio="none"><rect width="100" height="145" rx="5" fill="#121214"/><rect x="4" y="4" width="92" height="137" rx="4" fill="url(#likelion-diag-pattern)"/><rect x="3.5" y="3.5" width="93" height="138" rx="4.5" fill="none" stroke="#FF7710" stroke-width="1.2"/><circle cx="50" cy="72.5" r="20" fill="#18181c" stroke="#FF7710" stroke-width="1.2"/><image href="/src/assets/likelion_logo_official.png" x="37" y="60" width="26" height="20"/><text x="50" y="84" font-family="'Montserrat', sans-serif" font-weight="900" font-size="4.2" fill="#ffffff" text-anchor="middle">LIKE LION</text></svg></div>
+            <div class="deck-stack-card"><svg class="card-back-svg-art" viewBox="0 0 100 145" preserveAspectRatio="none"><rect width="100" height="145" rx="5" fill="#121214"/><rect x="4" y="4" width="92" height="137" rx="4" fill="url(#likelion-diag-pattern)"/><rect x="3.5" y="3.5" width="93" height="138" rx="4.5" fill="none" stroke="#FF7710" stroke-width="1.2"/><circle cx="50" cy="72.5" r="20" fill="#18181c" stroke="#FF7710" stroke-width="1.2"/><image href="/src/assets/likelion_logo_official.png" x="37" y="60" width="26" height="20"/><text x="50" y="84" font-family="'Montserrat', sans-serif" font-weight="900" font-size="4.2" fill="#ffffff" text-anchor="middle">LIKE LION</text></svg></div>
+            <div class="deck-stack-card"><svg class="card-back-svg-art" viewBox="0 0 100 145" preserveAspectRatio="none"><rect width="100" height="145" rx="5" fill="#121214"/><rect x="4" y="4" width="92" height="137" rx="4" fill="url(#likelion-diag-pattern)"/><rect x="3.5" y="3.5" width="93" height="138" rx="4.5" fill="none" stroke="#FF7710" stroke-width="1.2"/><circle cx="50" cy="72.5" r="20" fill="#18181c" stroke="#FF7710" stroke-width="1.2"/><image href="/src/assets/likelion_logo_official.png" x="37" y="60" width="26" height="20"/><text x="50" y="84" font-family="'Montserrat', sans-serif" font-weight="900" font-size="4.2" fill="#ffffff" text-anchor="middle">LIKE LION</text></svg></div>
+            <div class="deck-stack-card"><svg class="card-back-svg-art" viewBox="0 0 100 145" preserveAspectRatio="none"><rect width="100" height="145" rx="5" fill="#121214"/><rect x="4" y="4" width="92" height="137" rx="4" fill="url(#likelion-diag-pattern)"/><rect x="3.5" y="3.5" width="93" height="138" rx="4.5" fill="none" stroke="#FF7710" stroke-width="1.2"/><circle cx="50" cy="72.5" r="20" fill="#18181c" stroke="#FF7710" stroke-width="1.2"/><image href="/src/assets/likelion_logo_official.png" x="37" y="60" width="26" height="20"/><text x="50" y="84" font-family="'Montserrat', sans-serif" font-weight="900" font-size="4.2" fill="#ffffff" text-anchor="middle">LIKE LION</text></svg></div>
+          </div>
+        </div>
+
+        <!-- Completed Team Vault Stash Dock (우측 상단 1팀 보관함) -->
+        <div class="track1-stash-dock" id="track1-stash-dock" title="1팀 라인업 크게 보기">
+          <div class="stash-dock-header">
+            <span class="stash-dock-badge">1팀</span>
+            <span class="stash-dock-count">6명 완료 🔍</span>
+          </div>
+          <div class="stash-dock-cards" id="track1-stash-cards"></div>
+        </div>
+
+        <!-- 3 Teams Layout (No wireframe boxes, purely natural rows on felt) -->
+        <div class="table-teams-arena">
+          <!-- 1팀 -->
+          <div class="team-felt-pod pod-1" id="pod-team-1">
+            <div class="team-felt-header" id="header-team-1">
+              <h2 class="team-felt-title">1팀</h2>
+            </div>
+            <div class="cards-row-group">
+              <!-- Top: Leader -->
+              <div class="cards-deck-row" id="row-leader-team-1"></div>
+              <!-- Mid: Priority -->
+              <div class="cards-deck-row" id="row-priority-team-1"></div>
+              <!-- Bottom: Regular -->
+              <div class="cards-deck-row" id="row-regular-team-1"></div>
+            </div>
+          </div>
+
+          <!-- 2팀 -->
+          <div class="team-felt-pod pod-2" id="pod-team-2">
+            <div class="team-felt-header" id="header-team-2">
+              <h2 class="team-felt-title">2팀</h2>
+            </div>
+            <div class="cards-row-group">
+              <!-- Top: Leader -->
+              <div class="cards-deck-row" id="row-leader-team-2"></div>
+              <!-- Mid: Priority -->
+              <div class="cards-deck-row" id="row-priority-team-2"></div>
+              <!-- Bottom: Regular -->
+              <div class="cards-deck-row" id="row-regular-team-2"></div>
+            </div>
+          </div>
+
+          <!-- 3팀 -->
+          <div class="team-felt-pod pod-3" id="pod-team-3">
+            <div class="team-felt-header" id="header-team-3">
+              <h2 class="team-felt-title">3팀</h2>
+            </div>
+            <div class="cards-row-group">
+              <!-- Top: Co-Leaders -->
+              <div class="cards-deck-row" id="row-leader-team-3"></div>
+              <!-- Mid: Priority -->
+              <div class="cards-deck-row" id="row-priority-team-3"></div>
+              <!-- Bottom: Regular -->
+              <div class="cards-deck-row" id="row-regular-team-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Margin Side Control HUD (Outside the Poker Table) -->
+    <aside class="table-side-hud" aria-label="진행 제어 패널">
+      <div class="hud-brand-chip">
+        <img src="/src/assets/likelion_logo_official.png" class="hud-brand-logo" alt="LikeLion" />
+        <div class="hud-brand-text">
+          <span class="hud-brand-title">멋쟁이사자처럼</span>
+          <span class="hud-brand-sub" id="hud-track-label">2026 TEAM BUILDING</span>
+        </div>
+      </div>
+
+      <!-- Main Dealer Action Button -->
+      <button class="btn-dealer-main hud-btn-main" id="btn-dealer-action">
+        <span>1팀 공개</span> ➔
+      </button>
+
+      <!-- 1팀씩 크게 보기 Button -->
+      <button class="btn-table-showcase hud-btn-showcase" id="btn-showcase-open" style="display: none;">
+        🔍 1팀씩 크게 보기
+      </button>
+
+      <!-- Side Tools Cluster: 설정, 소리, 리셋 -->
+      <div class="hud-tools-cluster">
+        <button class="btn-felt-tool hud-tool-btn" id="btn-secret-admin" title="시드 제어">⚙️</button>
+        <button class="btn-felt-tool hud-tool-btn" id="btn-sound-toggle" title="효과음">🔊</button>
+        <button class="btn-felt-tool hud-tool-btn" id="btn-reset-app" title="테이블 초기화">🔄</button>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Spotlight Dimmer & Dynamic Flying Cards Container -->
+  <div class="flying-spotlight-dimmer" id="flying-dimmer"></div>
+  <div id="flying-cards-layer"></div>
+
+  <!-- Per-Team Large Showcase Modal (1팀씩 크게 보기) -->
+  <div class="team-focus-modal" id="team-focus-modal">
+    <div class="focus-modal-top">
+      <h2 class="focus-team-heading" id="focus-team-heading">1팀</h2>
+      <div class="focus-nav-cluster">
+        <button class="btn-felt-tool" id="btn-focus-prev" style="width: auto; padding: 0 12px; border-radius: 6px;">◀ 이전 팀</button>
+        <span style="font-family: var(--font-brand); font-weight: 800; color: var(--lion-orange);" id="focus-page-text">1 / 3</span>
+        <button class="btn-felt-tool" id="btn-focus-next" style="width: auto; padding: 0 12px; border-radius: 6px;">다음 팀 ▶</button>
+        <button class="btn-table-showcase" id="btn-focus-close" style="margin-left: 14px;">✖ 테이블 복귀</button>
+      </div>
+    </div>
+    <div class="focus-body-cards" id="focus-body-cards">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+
+  <!-- Admin Modal -->
+  <div class="flying-spotlight-dimmer" id="admin-modal" style="pointer-events: auto; display: flex; align-items: center; justify-content: center; z-index: 5000; opacity: 0; display: none;">
+    <div style="background: #18181b; border: 2px solid var(--lion-orange); border-radius: 12px; padding: 24px; width: 420px; position: relative;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h3 style="font-family: var(--font-brand); color: var(--lion-orange);">🦁 비밀 시드 제어</h3>
+        <button class="btn-felt-tool" id="btn-close-admin">✖</button>
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label style="font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px;">시드(Seed)</label>
+        <input type="text" id="admin-seed-input" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 12px; color: #fff;" value="likelion-poker-2026">
+      </div>
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px;">공유 URL</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="admin-share-url" style="flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 10px; color: #fff; font-size: 0.75rem;" readonly>
+          <button class="btn-felt-tool" id="btn-copy-share-url" style="width: auto; padding: 0 10px; border-radius: 6px;">복사</button>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button class="btn-felt-tool" id="btn-cancel-admin" style="width: auto; padding: 0 12px; border-radius: 6px;">닫기</button>
+        <button class="btn-dealer-main" id="btn-apply-admin" style="padding: 6px 16px; font-size: 0.8rem;">적용 & 초기화</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Card 3D Tilt Inspector Modal (드래그하여 기울기 및 반사광 조절) -->
+  <div class="card-inspect-modal" id="card-inspect-modal">
+    <div class="inspect-overlay-backdrop" id="inspect-modal-backdrop"></div>
+    <div class="inspect-content-container">
+      <div class="inspect-card-stage" id="inspect-card-stage"></div>
+      <div class="inspect-instruction-pill">
+        <span>🖱️ 마우스 커서를 올리면 3D 각도와 빛 반사가 반응합니다</span>
+      </div>
+      <button class="btn-inspect-close" id="btn-inspect-close" title="닫기">✖</button>
+    </div>
+  </div>
+
+  <div class="toast-msg" id="toast-msg"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

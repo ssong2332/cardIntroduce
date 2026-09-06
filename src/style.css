@@ -1,0 +1,1250 @@
+/* ==========================================================================
+   PURE POKER TABLE & OFFICIAL LIKELION FLYING CARD SYSTEM (100VH STRICT)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+:root {
+  --font-brand: 'Montserrat', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+
+  --lion-orange: #FF7710;
+  --lion-orange-glow: rgba(255, 119, 16, 0.45);
+  
+  --table-felt: radial-gradient(circle at 50% 30%, #153c2c 0%, #0d261c 55%, #06140e 100%);
+  --leather-rail: linear-gradient(180deg, #28292e 0%, #16171a 60%, #0a0a0c 100%);
+  --gold-border: linear-gradient(135deg, #fef08a 0%, #d97706 50%, #78350f 100%);
+
+  /* Proportional Card Ratio (~1 : 1.45) - Perfectly Fits 3 Rows Without Overflow */
+  --card-w: 104px;
+  --card-h: 152px;
+  --card-radius: 8px;
+
+  /* Showcase / Flying Spotlight Size */
+  --hero-card-w: 240px;
+  --hero-card-h: 350px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden; /* Strict NO SCROLL */
+  font-family: var(--font-sans);
+  background: #06080b;
+  color: #ffffff;
+  user-select: none;
+}
+
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==========================================================================
+   FULLSCREEN TABLE VIEWPORT & SIDE HUD MARGIN
+   Table centered with generous height, HUD placed in the right margin
+   ========================================================================== */
+.table-viewport {
+  position: relative;
+  z-index: 2;
+  width: 100vw;
+  height: 100vh;
+  padding: 12px 180px 12px 24px; /* Right padding preserves room for side HUD */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1600px) {
+  .table-viewport {
+    padding: 10px 160px 10px 16px;
+  }
+}
+
+/* Semi-Round Horseshoe Poker Table */
+.poker-felt-table {
+  width: 100%;
+  max-width: 1540px;
+  height: 100%;
+  max-height: 97vh;
+  background: var(--leather-rail);
+  border-radius: 20px 20px 440px 440px;
+  padding: 14px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95), inset 0 2px 4px rgba(255, 255, 255, 0.15), inset 0 -6px 14px rgba(0, 0, 0, 0.9);
+  border: 3px solid #24262e;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Inner Felt Surface */
+.felt-surface {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px 12px 420px 420px;
+  background: var(--table-felt);
+  border: 2px solid rgba(255, 119, 16, 0.35);
+  box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.85);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 14px 28px 24px;
+}
+
+/* ==========================================================================
+   SIDE CONTROL HUD (Placed in the Right Margin Outside Table)
+   ========================================================================== */
+.table-side-hud {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  background: rgba(14, 17, 24, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 119, 16, 0.35);
+  border-radius: 18px;
+  padding: 18px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 24px rgba(255, 119, 16, 0.15);
+  min-width: 184px;
+  width: max-content;
+}
+
+.hud-brand-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.hud-brand-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px var(--lion-orange-glow));
+}
+
+.hud-brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hud-brand-title {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.hud-brand-sub {
+  font-family: var(--font-brand);
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: var(--lion-orange);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.hud-btn-main {
+  width: 100%;
+  justify-content: center;
+  padding: 11px 18px;
+  font-size: 0.88rem;
+  border-radius: 12px;
+  white-space: nowrap !important;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.hud-btn-showcase {
+  width: 100%;
+  justify-content: center;
+  padding: 10px 16px;
+  font-size: 0.82rem;
+  border-radius: 10px;
+  white-space: nowrap !important;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.hud-tools-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.hud-tool-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.hud-tool-btn:hover {
+  background: rgba(255, 119, 16, 0.25);
+  border-color: var(--lion-orange);
+  transform: translateY(-2px);
+}
+
+/* Subtle Watermark */
+.felt-watermark-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.felt-ring-graphic {
+  width: 580px;
+  height: 290px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 119, 16, 0.16);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.felt-text-watermark {
+  font-family: var(--font-brand);
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: 10px;
+  color: rgba(255, 119, 16, 0.05);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   REAL 3D CARD STACK ON FELT
+   Matches exact table card dimensions: 118px x 171.1px!
+   ========================================================================== */
+.table-deck-anchor {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  z-index: 30;
+}
+
+.real-deck-stack {
+  position: relative;
+  width: 118px;
+  height: 171.1px;
+  aspect-ratio: 100 / 145;
+  cursor: pointer;
+  perspective: 700px;
+  transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.25, 1), transform 0.6s cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+
+.real-deck-stack.is-empty {
+  opacity: 0 !important;
+  transform: scale(0.6) translateY(-25px) !important;
+  pointer-events: none !important;
+}
+
+.deck-stack-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 7px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  background: #121214;
+  transition: transform 0.3s ease;
+}
+
+.deck-stack-card:nth-child(1) { transform: translate(0px, 0px); }
+.deck-stack-card:nth-child(2) { transform: translate(2px, -2px); }
+.deck-stack-card:nth-child(3) { transform: translate(4px, -4px); }
+.deck-stack-card:nth-child(4) { transform: translate(6px, -6px); }
+.deck-stack-card:nth-child(5) { transform: translate(8px, -8px); box-shadow: 0 10px 22px rgba(0, 0, 0, 0.95); }
+
+/* Dynamic 3D Casino Deck Shuffle (Fan Out, Split, & Cascading Interleave) */
+@keyframes dynamicRiffleLeft {
+  0% { transform: translate(0, 0) rotateZ(0deg) rotateY(0deg); }
+  25% { transform: translate3d(-50px, -28px, 30px) rotateZ(-28deg) rotateY(-18deg); }
+  50% { transform: translate3d(-25px, -14px, 45px) rotateZ(-14deg) rotateY(-10deg); }
+  75% { transform: translate3d(-8px, -5px, 20px) rotateZ(-4deg); }
+  100% { transform: translate(0, 0) rotateZ(0deg) rotateY(0deg); }
+}
+
+@keyframes dynamicRiffleRight {
+  0% { transform: translate(0, 0) rotateZ(0deg) rotateY(0deg); }
+  25% { transform: translate3d(50px, -28px, 30px) rotateZ(28deg) rotateY(18deg); }
+  50% { transform: translate3d(25px, -14px, 45px) rotateZ(14deg) rotateY(10deg); }
+  75% { transform: translate3d(8px, -5px, 20px) rotateZ(4deg); }
+  100% { transform: translate(0, 0) rotateZ(0deg) rotateY(0deg); }
+}
+
+@keyframes dynamicDeckBridge {
+  0% { transform: translate(0, 0) scale(1); }
+  30% { transform: translateY(-16px) scale(1.1); filter: drop-shadow(0 18px 30px var(--lion-orange-glow)); }
+  60% { transform: translateY(-8px) scale(1.05); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.real-deck-stack.shuffling {
+  animation: dynamicDeckBridge 1.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+.real-deck-stack.shuffling .deck-stack-card:nth-child(1),
+.real-deck-stack.shuffling .deck-stack-card:nth-child(3),
+.real-deck-stack.shuffling .deck-stack-card:nth-child(5) {
+  animation: dynamicRiffleLeft 0.58s cubic-bezier(0.3, 1, 0.4, 1) 2;
+}
+
+.real-deck-stack.shuffling .deck-stack-card:nth-child(2),
+.real-deck-stack.shuffling .deck-stack-card:nth-child(4) {
+  animation: dynamicRiffleRight 0.58s cubic-bezier(0.3, 1, 0.4, 1) 2;
+}
+
+/* Action Controls */
+.btn-dealer-main {
+  background: linear-gradient(135deg, #FF9442 0%, #FF7710 50%, #C44C00 100%);
+  border: 1px solid #ffba82;
+  color: #ffffff;
+  font-family: var(--font-brand);
+  font-weight: 800;
+  font-size: 0.92rem;
+  letter-spacing: 0.5px;
+  padding: 8px 24px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px var(--lion-orange-glow);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+
+.btn-dealer-main:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 26px rgba(255, 119, 16, 0.8);
+}
+
+.btn-dealer-main:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+}
+
+.btn-table-showcase {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 6px 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-table-showcase:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   TRACK 1 VAULT STASH DOCK (Corner Vault on Felt Table)
+   ========================================================================== */
+.track1-stash-dock {
+  position: absolute;
+  right: 28px;
+  top: 20px;
+  z-index: 50;
+  background: rgba(6, 12, 24, 0.88);
+  border: 1.5px solid rgba(0, 229, 255, 0.55);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 14px;
+  padding: 8px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-12px) scale(0.95);
+  transition: all 0.55s cubic-bezier(0.2, 0.9, 0.25, 1);
+  cursor: pointer;
+}
+
+.track1-stash-dock.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.track1-stash-dock:hover {
+  border-color: #00e5ff;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.9), 0 0 28px rgba(0, 229, 255, 0.4);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.stash-dock-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.stash-dock-badge {
+  background: linear-gradient(135deg, #0284c7, #00e5ff);
+  color: #020617;
+  font-weight: 900;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.stash-dock-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #bae6fd;
+}
+
+.stash-dock-cards {
+  display: flex;
+  align-items: center;
+  padding: 4px 0 2px;
+}
+
+.stash-dock-mini-card {
+  width: 44px;
+  height: 63.8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: -24px;
+  box-shadow: -2px 4px 10px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 229, 255, 0.6);
+  transition: transform 0.25s ease, margin 0.25s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.track1-stash-dock:hover .stash-dock-mini-card {
+  margin-right: -10px;
+}
+
+.stash-dock-mini-card:last-child {
+  margin-right: 0 !important;
+}
+
+.stash-dock-mini-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #091830;
+}
+/* ==========================================================================
+   3 TEAMS LAYOUT ON FELT
+   Elevated card positions & balanced 20px vertical gap to completely prevent overlaps
+   ========================================================================== */
+.table-teams-arena {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  position: relative;
+  z-index: 10;
+  min-height: 0;
+  margin-top: 6px;
+}
+
+/* 1-Track Single Team Layout - Strictly 1 Single Horizontal Row */
+.table-teams-arena.is-single-team {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.table-teams-arena.is-single-team .pod-2,
+.table-teams-arena.is-single-team .pod-3 {
+  display: none !important;
+}
+
+.table-teams-arena.is-single-team .pod-1 {
+  width: 100%;
+  max-width: 940px;
+}
+
+.table-teams-arena.is-single-team .cards-row-group {
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 10px 0 20px !important;
+}
+
+.table-teams-arena.is-single-team #row-leader-team-1 {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-height: 180px !important;
+}
+
+.table-teams-arena.is-single-team #row-priority-team-1,
+.table-teams-arena.is-single-team #row-regular-team-1 {
+  display: none !important;
+}
+
+.team-felt-pod {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 0;
+}
+
+/* Team Header */
+.team-felt-header {
+  text-align: center;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.team-felt-header.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.team-felt-title {
+  font-family: var(--font-brand);
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.pod-1 .team-felt-title { color: #FF7710; }
+.pod-2 .team-felt-title { color: #38bdf8; }
+.pod-3 .team-felt-title { color: #c084fc; }
+
+/* The 3 Card Rows: Leaders (Top), Priority (Mid), Regular (Bottom)
+   Evenly distributed to utilize the entire vertical table space naturally */
+.cards-row-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 16px;
+  min-height: 0;
+  padding: 6px 0 16px;
+}
+
+.cards-deck-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  min-height: 171.1px;
+  align-items: center;
+}
+
+/* ==========================================================================
+   POKER CARDS (Standardized Unified Ratio & Size across ALL cards)
+   Standard Ratio: 100 / 145
+   ========================================================================== */
+.poker-card-element {
+  aspect-ratio: 100 / 145;
+  border-radius: 8px;
+  position: relative;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transform: rotateY(180deg); /* Front facing when settled on table */
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+  user-select: none;
+  cursor: pointer; /* Clickable to inspect card */
+  flex-shrink: 0;
+}
+
+/* Cards on Table Felt: Exactly 118px x 171.1px across all teams and rows */
+.cards-deck-row .poker-card-element {
+  width: 118px !important;
+  height: 171.1px !important;
+  max-height: 171.1px !important;
+}
+
+.poker-card-element:hover {
+  transform: rotateY(180deg) translateY(-6px) scale(1.06);
+  z-index: 50 !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.9), 0 0 16px var(--lion-orange-glow);
+}
+
+/* Card Faces */
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+/* --- CARD BACK: LikeLion Official 45-degree Rotated Pattern (SVG) --- */
+.poker-card-back {
+  background: #121214;
+  border: 1px solid #FF7710;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8);
+  transform: rotateY(0deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.card-back-svg-art {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+}
+
+/* --- CARD FRONT: Super Clean Profile (NO suits, NO ranks) --- */
+.poker-card-front {
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  padding: 6px 6px 5px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.85);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Strict height for cards placed inside the table rows (118px x 171.1px) */
+.cards-deck-row .poker-card-front {
+  height: 171.1px !important;
+  max-height: 171.1px !important;
+  padding: 7px 7px 6px;
+}
+
+/* Tier 1: Leader Card (Gold Luxury) */
+.poker-card-front.tier-leader {
+  background: linear-gradient(150deg, #241d15 0%, #151319 55%, #0d0c11 100%);
+  border: 2px solid #f59e0b;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85), 0 0 14px rgba(245, 158, 11, 0.35);
+}
+
+.tier-leader .person-tier-badge {
+  background: linear-gradient(135deg, #fef08a 0%, #d97706 100%);
+  color: #070913;
+}
+
+.tier-leader .person-avatar-frame {
+  border-color: #f59e0b;
+}
+
+/* Tier 2: Priority Card (Platinum Sky Blue) */
+.poker-card-front.tier-priority {
+  background: linear-gradient(150deg, #182230 0%, #0f1520 55%, #090c12 100%);
+  border: 2px solid #38bdf8;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85), 0 0 14px rgba(56, 189, 248, 0.3);
+}
+
+.tier-priority .person-tier-badge {
+  background: linear-gradient(135deg, #7dd3fc 0%, #0284c7 100%);
+  color: #070913;
+}
+
+.tier-priority .person-avatar-frame {
+  border-color: #38bdf8;
+}
+
+/* Tier 3: Regular Card (Clean Dark Slate Card) */
+.poker-card-front.tier-regular {
+  background: linear-gradient(150deg, #1e2430 0%, #131722 55%, #0b0e16 100%);
+  border: 2px solid #64748b;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85), 0 0 10px rgba(148, 163, 184, 0.2);
+}
+
+.tier-regular .person-tier-badge {
+  background: #FF7710;
+  color: #ffffff;
+}
+
+.tier-regular .person-avatar-frame {
+  border-color: #64748b;
+}
+
+/* ==========================================================================
+   TRACK 1 CYBER SAPPHIRE & NEON CYAN THEME STYLES
+   ========================================================================== */
+.poker-card-back.theme-track1-back {
+  background: #060c18 !important;
+  border: 1.5px solid #00e5ff !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9), 0 0 16px rgba(0, 229, 255, 0.35) !important;
+}
+
+.poker-card-front.card-front-track1 {
+  background: linear-gradient(155deg, #091830 0%, #050e1c 55%, #020610 100%) !important;
+  border: 2px solid rgba(0, 229, 255, 0.75) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9), 0 0 14px rgba(0, 229, 255, 0.25) !important;
+}
+
+.card-front-track1.tier-leader {
+  border: 2px solid #00e5ff !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9), 0 0 22px rgba(0, 229, 255, 0.55) !important;
+}
+
+.card-front-track1.tier-leader .person-tier-badge {
+  background: linear-gradient(135deg, #e0f7fa 0%, #00b4d8 100%) !important;
+  color: #020617 !important;
+}
+
+.card-front-track1 .person-name-text {
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.4) !important;
+}
+
+.card-front-track1 .person-role-text {
+  color: #00e5ff !important;
+}
+
+.card-front-track1.tier-regular .person-tier-badge {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+.card-front-track1 .person-tag-pill {
+  background: rgba(0, 229, 255, 0.12) !important;
+  border: 1px solid rgba(0, 229, 255, 0.35) !important;
+  color: #bae6fd !important;
+}
+
+/* Card Front Internal Layout Elements (Rigid Heights) */
+.person-top-bar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 16px;
+  margin-bottom: 3px;
+  flex-shrink: 0;
+}
+
+.person-tier-badge {
+  font-size: 0.56rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.person-avatar-frame {
+  width: 100%;
+  height: 52px !important;
+  border-radius: 6px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: #141822;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
+}
+
+.person-avatar-img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+
+.person-meta-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 42px;
+  flex-shrink: 0;
+}
+
+.person-name-text {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.person-role-text {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #FF7710;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.tier-priority .person-role-text {
+  color: #38bdf8;
+}
+
+.tier-leader .person-role-text {
+  color: #f59e0b;
+}
+
+/* Tags Wrap - Strict 1 row with overflow prevention */
+.person-tags-wrap {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  align-items: center;
+  height: 22px !important;
+  max-height: 22px !important;
+  overflow: hidden;
+  flex-wrap: nowrap;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.person-tag-pill {
+  font-size: 0.54rem;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 52px;
+}
+
+.card-sheen-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.18) 50%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   SPOTLIGHT TEAM BANNERS (Distinct team grouping during leader reveal)
+   ========================================================================== */
+.spotlight-team-banner {
+  position: fixed;
+  z-index: 2200;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-brand);
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  padding: 6px 18px;
+  border-radius: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+  white-space: nowrap;
+}
+
+.spotlight-team-banner.visible {
+  opacity: 1;
+}
+
+.team-1-banner {
+  background: rgba(255, 119, 16, 0.28);
+  border: 1.5px solid #FF7710;
+  color: #FF9442;
+  box-shadow: 0 4px 18px rgba(255, 119, 16, 0.45);
+}
+
+.team-2-banner {
+  background: rgba(56, 189, 248, 0.28);
+  border: 1.5px solid #38bdf8;
+  color: #7dd3fc;
+  box-shadow: 0 4px 18px rgba(56, 189, 248, 0.45);
+}
+
+.team-3-banner {
+  background: rgba(192, 132, 252, 0.28);
+  border: 1.5px solid #c084fc;
+  color: #e9d5ff;
+  box-shadow: 0 4px 18px rgba(192, 132, 252, 0.45);
+}
+
+/* ==========================================================================
+   FLYING CARD SPOTLIGHT ANIMATION (Deck ➔ Center Flip ➔ Glide to Seat)
+   NO HEAVY BLUR - Natural Poker Room Atmosphere
+   ========================================================================== */
+.flying-card-wrapper {
+  position: fixed;
+  z-index: 2000;
+  pointer-events: none;
+  width: var(--hero-card-w);
+  height: var(--hero-card-h);
+  perspective: 1400px;
+  transition: all 0.65s cubic-bezier(0.2, 0.9, 0.25, 1);
+  transform-origin: center center;
+  /* Ultra-sharp text and SVG rendering properties */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.flying-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.25, 1, 0.35, 1);
+  transform: translate3d(0, 0, 0);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Flying Card Back and Front */
+.flying-card-inner .card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.flying-card-inner .poker-card-back {
+  transform: rotateY(0deg) translateZ(1px);
+}
+
+.flying-card-inner .poker-card-front {
+  transform: rotateY(180deg) translateZ(1px);
+  padding: 18px 16px;
+  border-radius: 12px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Flipped State for Flying Card */
+.flying-card-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* Large text inside Flying Card - Force crisp hardware rasterization */
+.flying-card-inner .person-top-bar { margin-bottom: 10px; }
+.flying-card-inner .person-tier-badge { font-size: 0.88rem; padding: 4px 12px; border-radius: 6px; transform: translateZ(2px); }
+.flying-card-inner .person-avatar-frame { height: 130px !important; margin-bottom: 14px; border-radius: 10px; transform: translateZ(2px); }
+.flying-card-inner .person-avatar-img { width: 105px; height: 105px; image-rendering: -webkit-optimize-contrast; }
+.flying-card-inner .person-meta-content { height: auto; margin-bottom: 8px; transform: translateZ(2px); }
+.flying-card-inner .person-name-text { font-size: 1.7rem; margin-bottom: 6px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+.flying-card-inner .person-role-text { font-size: 1.05rem; margin-bottom: 8px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+.flying-card-inner .person-tags-wrap { height: auto !important; max-height: none !important; gap: 6px; transform: translateZ(2px); }
+.flying-card-inner .person-tag-pill { font-size: 0.82rem; padding: 3px 10px; border-radius: 4px; max-width: none !important; }
+
+/* Track Switcher (1트랙 / 2트랙) */
+.hud-track-switcher {
+  display: flex;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 119, 16, 0.3);
+  border-radius: 20px;
+  padding: 3px;
+  width: 100%;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.hud-track-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-family: var(--font-brand);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 5px 8px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.hud-track-btn.active {
+  background: var(--lion-orange);
+  color: #ffffff;
+  box-shadow: 0 2px 10px var(--lion-orange-glow);
+}
+
+.hud-track-btn:hover:not(.active) {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Spotlight Dim Backdrop: Strictly NO BLUR to avoid jarring disconnect! */
+.flying-spotlight-dimmer {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(2, 4, 8, 0.25) 0%, rgba(2, 4, 8, 0.6) 100%);
+  backdrop-filter: none !important; /* NO BLUR! */
+  z-index: 1900;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.flying-spotlight-dimmer.active {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   PER-TEAM LARGE FOCUS SHOWCASE VIEW (1팀씩 크게 보기)
+   Cards enlarged, padding optimized to maximize card visibility
+   ========================================================================== */
+.team-focus-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 5, 8, 0.94);
+  backdrop-filter: blur(12px);
+  z-index: 3000;
+  display: none;
+  flex-direction: column;
+  padding: 20px 36px;
+}
+
+.team-focus-modal.active {
+  display: flex;
+}
+
+.focus-modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.focus-team-heading {
+  font-family: var(--font-brand);
+  font-size: 1.85rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.focus-nav-cluster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.focus-body-cards {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 20px 0;
+  perspective: 1200px;
+}
+
+/* Large Cards Inside Per-Team Showcase (Strict 100:145 Poker Card Ratio) */
+.focus-body-cards .poker-card-element {
+  width: 220px !important;
+  height: 319px !important;
+  max-height: 319px !important;
+  aspect-ratio: 100 / 145;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.focus-body-cards .poker-card-front {
+  height: 100% !important;
+  max-height: 100% !important;
+  padding: 18px 16px;
+  border-radius: 12px;
+}
+
+.focus-body-cards .person-top-bar { margin-bottom: 10px; }
+.focus-body-cards .person-tier-badge { font-size: 0.85rem; padding: 4px 12px; border-radius: 6px; }
+.focus-body-cards .person-avatar-frame { height: 125px !important; margin-bottom: 12px; border-radius: 10px; }
+.focus-body-cards .person-avatar-img { width: 95px; height: 95px; }
+.focus-body-cards .person-meta-content { height: auto; margin-bottom: 6px; }
+.focus-body-cards .person-name-text { font-size: 1.55rem; margin-bottom: 6px; }
+.focus-body-cards .person-role-text { font-size: 1.0rem; margin-bottom: 8px; }
+.focus-body-cards .person-tags-wrap { height: auto !important; max-height: none !important; gap: 6px; }
+.focus-body-cards .person-tag-pill { font-size: 0.8rem; padding: 3px 9px; border-radius: 4px; max-width: none !important; }
+
+/* ==========================================================================
+   SINGLE CARD 3D TILT INSPECTOR MODAL
+   Hover cursor to tilt & dynamic light reflection
+   ========================================================================== */
+.card-inspect-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-inspect-modal.active {
+  display: flex;
+}
+
+.inspect-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 4, 8, 0.85);
+  cursor: pointer;
+}
+
+.inspect-content-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  perspective: 1200px;
+}
+
+.inspect-card-stage {
+  width: 290px;
+  height: 420.5px;
+  aspect-ratio: 100 / 145;
+  position: relative;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.12s ease-out;
+  border-radius: 14px;
+}
+
+/* Big Card Element in Inspector */
+.inspect-card-stage .poker-card-element {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  transform: rotateY(180deg);
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95), 0 0 25px rgba(255, 119, 16, 0.3);
+}
+
+.inspect-card-stage .poker-card-front {
+  height: 100% !important;
+  max-height: 100% !important;
+  padding: 24px 20px;
+  border-radius: 14px;
+}
+
+.inspect-card-stage .person-top-bar { margin-bottom: 12px; }
+.inspect-card-stage .person-tier-badge { font-size: 0.95rem; padding: 5px 14px; border-radius: 6px; }
+.inspect-card-stage .person-avatar-frame { height: 165px !important; margin-bottom: 16px; border-radius: 12px; }
+.inspect-card-stage .person-avatar-img { width: 130px; height: 130px; }
+.inspect-card-stage .person-meta-content { height: auto; margin-bottom: 8px; }
+.inspect-card-stage .person-name-text { font-size: 1.95rem; margin-bottom: 6px; }
+.inspect-card-stage .person-role-text { font-size: 1.15rem; margin-bottom: 14px; }
+.inspect-card-stage .person-tags-wrap { height: auto !important; max-height: none !important; gap: 8px; }
+.inspect-card-stage .person-tag-pill { font-size: 0.88rem; padding: 4px 12px; border-radius: 5px; max-width: none !important; }
+
+/* Dynamic 3D Prism Hologram Glare / Sheen Layer */
+.inspect-dynamic-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.92;
+  background: 
+    linear-gradient(115deg, transparent 15%, rgba(255, 255, 255, 0.5) 35%, rgba(255, 205, 80, 0.7) 48%, rgba(80, 220, 255, 0.65) 60%, transparent 85%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 160, 50, 0.35) 40%, transparent 70%);
+  transition: opacity 0.15s ease;
+  z-index: 20;
+  transform: translateZ(2px);
+}
+
+.inspect-instruction-pill {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  color: #cbd5e1;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-inspect-close {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-inspect-close:hover {
+  background: #FF7710;
+  border-color: #FF7710;
+}
+
+/* Toast Message (Permanently Hidden per User Request) */
+.toast-msg {
+  display: none !important;
+}
+

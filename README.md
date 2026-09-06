@@ -1,61 +1,32 @@
-# {{PROJECT_NAME}}
+# LikeLion Poker Table — 멋쟁이사자처럼 정통 포커 테이블 팀 빌딩 (cardIntroduce)
 
-> 이 리포는 [start_coding](https://github.com/) 템플릿에서 생성되었다. 초기화 전이라면 아래 "새 프로젝트 시작"을 먼저 실행할 것.
+동아리 팀 프로젝트 발표를 위한 순수 세미 라운드 포커 테이블 및 멋쟁이사자처럼 카드 뭉치 딜링 쇼케이스 웹 애플리케이션입니다.
 
-## 새 프로젝트 시작 (템플릿 사용법)
+## ✨ 주요 기능 및 특징
 
-1. GitHub에서 **Use this template** → 새 리포 생성 → clone
-2. 초기화 스크립트 실행 (Windows):
+1. **와이어프레임 틀 없는 100vh 순수 포커 테이블**:
+   - 외부 헤더와 번잡한 배너를 완전히 숨기고, 오직 그린 펠트와 가죽 레일로 감싼 정통 포커 테이블만 화면 가득 표시.
+   - 점선 박스 틀 없이, 상단 3D 카드 뭉치(스택)에서 카드가 날아와 자연스럽게 안착.
+2. **멋쟁이사자처럼(LikeLion) 공식 고해상도 카드 백 & 3D 플립 애니메이션**:
+   - 불꽃 갈기의 사자 엠블럼과 'LIKELION', 'HACK YOUR LIFE' 슬로건이 새겨진 정통 바이시클 스타일 카드 뒷면.
+   - 덱에서 카드가 출발할 때는 뒷면으로 오다가, 화면 중앙에서 180도 Y축 회전하며 인물 정보 앞면으로 드라마틱하게 플립!
+3. **등급별 차별화된 포커 카드 디자인**:
+   - **팀장 (Leader)**: 골드 메탈릭 테두리 + King(K) 랭크 + `👑 TEAM LEADER` 배지
+   - **우선선발 (Priority)**: 실버/블루 테두리 + Ace(A) 랭크 + `⭐ 우선선발` 배지
+   - **일반 팀원 (Regular)**: 클래식 포커 화이트 카드 + J/Q/10 랭크 + `팀원` 배지
+4. **자연스러운 포커 딜링 파이프라인**:
+   - 1단계: 3개 팀 팀장(1팀 1명, 2팀 1명, 3팀 공동팀장 2명) 공개 ➔ 상단 행 안착
+   - 2단계: 팀장 선발 인원(각 2명씩, 총 6명) 공개 ➔ 팀장 카드 밑 중간 행 안착
+   - 3단계: 남은 팀원 3명 배정 ➔ 맨 아래 행 안착
+5. **팀별 대형 포커스 쇼케이스**:
+   - 임의의 팀명('Apex' 등)을 일체 배제하고 **[1팀], [2팀], [3팀]**으로 명명.
+   - '1팀씩 크게 보기'로 1팀 ↔ 2팀 ↔ 3팀의 대형 포커 카드를 둘러보고 테이블로 복귀.
+
+## 🚀 실행 방법
 
 ```bash
-powershell -ExecutionPolicy Bypass -File scripts/init.ps1 -ProjectName "프로젝트명"
+npm install
+npm run dev      # 로컬 개발 서버 (포트: 5173)
+npm test         # 단위 테스트 (9 tests pass)
+npm run build    # 프로덕션 빌드
 ```
-
-   macOS/Linux:
-
-```bash
-bash scripts/init.sh "프로젝트명"
-```
-
-3. **Codex를 쓸 계획이면 먼저 `/hooks`로 훅 정의를 신뢰 승인한다** — 승인 전에는 main 직접 커밋·`.env` 접근 차단이 조용히 무동작한다. 안티그래비티는 `.env` 열기를 1회 시도해 차단되는지 확인한다(자동이지만 cwd 전제가 있음).
-4. 아이디어를 도구(Claude Code·Codex·안티그래비티 아무거나)에 말한다 → **대화형 인터뷰**로 명세를 완성한 뒤 `docs/PRD.md`가 작성된다 (파이프라인 0~1단계)
-5. Claude Code / Codex / 안티그래비티 어느 도구로 열어도 같은 규칙(AGENTS.md)이 적용된다.
-
-| 도구 | 규칙 읽는 방식 | 강제 계층 활성 조건 |
-|---|---|---|
-| Claude Code | CLAUDE.md의 `@AGENTS.md` import | 자동 |
-| Codex | 루트 AGENTS.md 직접 읽음 | **최초 1회 `/hooks` 신뢰 승인 필요 — 안 하면 무동작** |
-| 안티그래비티 (Gemini) | 루트 AGENTS.md 직접 읽음 | cwd=워크스페이스 루트 전제 — `.env` 차단 1회 확인 필수 |
-
-## 프로젝트 개요
-
-<!-- 초기화 후 docs 에이전트가 채운다 -->
-
-## 구조
-
-```
-{{PROJECT_NAME}}/
-├── AGENTS.md          # 마스터 규칙 (단일 원본)
-├── CLAUDE.md          # Claude Code 어댑터
-├── docs/              # 프로젝트 문서 + ToolPacks.md(스킬·MCP 팩) + KitFeedback.md(템플릿 개선 대기열)
-├── scripts/           # 초기화 스크립트 init.ps1·init.sh(1회 실행) + agy-guard.js(안티그래비티 가드, 상주)
-├── .agents/skills/    # 공통 호환 스킬 팩 (안티그래비티·Codex·Claude 공유)
-├── .claude/agents/    # 6-에이전트 팩 (Claude Code 전용)
-├── .claude/hooks/     # 강제 가드 3종 + 정합성 검사 (Claude Code·Codex 공유)
-├── .codex/hooks.json  # Codex 배선 (최초 1회 /hooks 신뢰 승인 필요)
-└── .agents/hooks.json # 안티그래비티 배선 → scripts/agy-guard.js
-```
-
-## 개발 파이프라인
-
-아이디어 인터뷰 → 기획 → 설계 → 구현 → 리뷰/검증 → 문서화. 단계별 산출물과 게이트는 [AGENTS.md](AGENTS.md) 참조.
-
-인터뷰는 아이디어를 받아 적는 단계가 아니라 **같이 설계하는 대화**다: 개인/팀·언어·배포·기능 범위 등 빈칸을 질문으로 채우고, 선택지마다 추천 방향과 반대 방향을 함께 제시하며, 사용자가 "완성"을 선언할 때까지 계속된다. 절차는 [.agents/skills/idea-interview/SKILL.md](.agents/skills/idea-interview/SKILL.md).
-
-## 이 킷 자체의 문제를 발견하면
-
-규칙 때문에 막히거나 우회했다면 **여기서 규칙을 고치지 말고** [docs/KitFeedback.md](docs/KitFeedback.md)에 행을 추가한다. 나중에 템플릿 리포에서 그 표를 읽고 원본을 고치면 다음 프로젝트부터 반영된다.
-
-## 실행/빌드/테스트
-
-<!-- 검증된 명령어는 docs/CodingRules.md "검증된 명령어" 절에 기록 후 여기에 반영 -->
