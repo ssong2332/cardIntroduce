@@ -20,7 +20,7 @@ export const track1Config = {
           name: "김현서",
           role: "기획",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Junho&backgroundColor=b6e3f4",
-          tags: ["Team Lead"],
+          tags: ["Html", "CSS", "React", "Node.js", "Django", "Python"],
           cardTier: "leader"
         }
       ],
@@ -33,7 +33,7 @@ export const track1Config = {
       name: "김경진",
       role: "백엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Haneul&backgroundColor=ffd5dc",
-      tags: ["Java", "Html", "JavaScript", "Css", "React"],
+      tags: ["Java", "Html", "JavaScript", "CSS", "React"],
       cardTier: "regular",
       targetTeamId: "team-1"
     },
@@ -42,7 +42,7 @@ export const track1Config = {
       name: "김민종",
       role: "프론트엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Minseok&backgroundColor=c0aede",
-      tags: ["Html", "Css", "JavaScript", "React", "Svelte"],
+      tags: ["Html", "CSS", "JavaScript", "React", "Svelte"],
       cardTier: "regular",
       targetTeamId: "team-1"
     },
@@ -115,7 +115,7 @@ export const track2Config = {
           name: "이찬희",
           role: "기획",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Dongwon&backgroundColor=c0aede",
-          tags: ["Ppt", "Canva", "Docs"],
+          tags: ["PPT", "Canva", "Docs"],
           cardTier: "priority"
         }
       ]
@@ -140,7 +140,7 @@ export const track2Config = {
           name: "김희진",
           role: "프론트엔드",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Haeun&backgroundColor=b6e3f4",
-          tags: ["Html", "Css", "JavaScript", "Java"],
+          tags: ["Html", "CSS", "JavaScript", "Java"],
           cardTier: "priority"
         },
         {
@@ -163,7 +163,7 @@ export const track2Config = {
           name: "박정은",
           role: "프론트엔드",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Seoyeon&backgroundColor=b6e3f4",
-          tags: ["Html", "Css", "JavaScrip"],
+          tags: ["Html", "CSS", "JavaScrip"],
           cardTier: "leader",
           isCoLeader: true
         },
@@ -188,10 +188,10 @@ export const track2Config = {
         },
         {
           id: "p-6",
-          name: "박한음",
-          role: "기획",
+          name: "유지효",
+          role: "프론트엔드",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Sehun&backgroundColor=c0aede",
-          tags: ["ManyFast"],
+          tags: ["Html", "CSS", "React", "Vite", "Github"],
           cardTier: "priority"
         }
       ]
@@ -199,38 +199,29 @@ export const track2Config = {
   ],
   remainingPool: [
     {
-      id: "r-1",
-      name: "이수연",
-      role: "기획",
-      avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Suzy&backgroundColor=ffd5dc",
-      tags: ["Node.js", "React"],
-      cardTier: "regular",
-      targetTeamId: "team-1"
-    },
-    {
       id: "r-2",
-      name: "유지효",
-      role: "프론트엔드",
+      name: "박한음",
+      role: "기획",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Joohyuk&backgroundColor=b6e3f4",
-      tags: ["Html", "Css", "React", "Vite", "Github"],
+      tags: ["ManyFast"],
       cardTier: "regular",
-      targetTeamId: "team-1"
+      targetTeamId: "team-2"
     },
     {
-      id: "r-3",
+      id: "r-1",
       name: "홍지원",
       role: "백엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Taeri&backgroundColor=c0aede",
       tags: ["Django", "Spring Boot"],
       cardTier: "regular",
-      targetTeamId: "team-2"
+      targetTeamId: "team-1"
     },
     {
       id: "r-4",
       name: "문서연",
       role: "프론트엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Taeri&backgroundColor=c0aede",
-      tags: ["JavaScript", "Html", "Css"],
+      tags: ["JavaScript", "Html", "CSS"],
       cardTier: "regular",
       targetTeamId: "team-3"
     }

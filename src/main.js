@@ -1181,10 +1181,20 @@ function openSingleCardInspector(member) {
     isHovered = false;
   }
 
-  cardInspectModal.onmousemove = onPointerMove;
-  cardInspectModal.onmouseleave = onPointerLeave;
-  cardInspectModal.ontouchmove = onPointerMove;
-  cardInspectModal.ontouchend = onPointerLeave;
+  inspectCardStage.onmouseenter = (e) => {
+    isHovered = true;
+    onPointerMove(e);
+  };
+  inspectCardStage.onmousemove = onPointerMove;
+  inspectCardStage.onmouseleave = onPointerLeave;
+
+  inspectCardStage.ontouchstart = (e) => {
+    isHovered = true;
+    onPointerMove(e);
+  };
+  inspectCardStage.ontouchmove = onPointerMove;
+  inspectCardStage.ontouchend = onPointerLeave;
+  inspectCardStage.ontouchcancel = onPointerLeave;
 }
 
 function closeSingleCardInspector() {
@@ -1193,10 +1203,13 @@ function closeSingleCardInspector() {
     cancelAnimationFrame(inspectorAnimFrame);
     inspectorAnimFrame = null;
   }
-  cardInspectModal.onmousemove = null;
-  cardInspectModal.onmouseleave = null;
-  cardInspectModal.ontouchmove = null;
-  cardInspectModal.ontouchend = null;
+  inspectCardStage.onmouseenter = null;
+  inspectCardStage.onmousemove = null;
+  inspectCardStage.onmouseleave = null;
+  inspectCardStage.ontouchstart = null;
+  inspectCardStage.ontouchmove = null;
+  inspectCardStage.ontouchend = null;
+  inspectCardStage.ontouchcancel = null;
 }
 
 /**
