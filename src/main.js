@@ -225,20 +225,23 @@ function spotlightTrack1FullRoster() {
     const startX = deckRect.left + deckRect.width / 2;
     const startY = deckRect.top + deckRect.height / 2;
 
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight * 0.42;
+    const feltEl = document.querySelector('.felt-surface') || document.querySelector('.poker-felt-table');
+    const feltRect = feltEl ? feltEl.getBoundingClientRect() : { left: 24, width: window.innerWidth - 204, top: 20, height: window.innerHeight - 40 };
+    const centerX = Math.round(feltRect.left + feltRect.width / 2);
+    const centerY = Math.round(feltRect.top + feltRect.height * 0.44);
 
-    // 6 cards horizontally spaced: pitch = 210px
-    const offsets = [-525, -315, -105, 105, 315, 525];
+    // Requirement #2: 6 cards horizontally spaced with safe pitch (168px), strictly inside felt table
+    const offsets = [-420, -252, -84, 84, 252, 420];
     const wrappers = [];
 
     allMembers.forEach((member, idx) => {
       const wrap = createFlyingCardWrapper(member);
       flyingCardsLayer.appendChild(wrap);
 
+      wrap.style.transition = 'none';
       wrap.style.left = `${startX}px`;
       wrap.style.top = `${startY}px`;
-      wrap.style.transform = 'translate(-50%, -50%) scale(0.35)';
+      wrap.style.transform = `translate(-50%, -50%) scale(0.32) rotate(${idx * -2}deg)`;
 
       wrappers.push({
         member,
@@ -248,19 +251,21 @@ function spotlightTrack1FullRoster() {
       });
     });
 
-    soundFx.playShuffle();
+    void wrappers[0].wrap.offsetHeight;
 
-    // Fly out to center with integer pixel precision
-    requestAnimationFrame(() => {
-      wrappers.forEach((item) => {
+    // Staggered dealing out of 6 cards from the deck (Requirement #1: 카드 드로우 애니메이션 확실함)
+    wrappers.forEach((item, idx) => {
+      setTimeout(() => {
+        item.wrap.style.transition = 'all 0.65s cubic-bezier(0.2, 0.9, 0.25, 1)';
         item.wrap.style.left = `${Math.round(item.targetX)}px`;
         item.wrap.style.top = `${Math.round(centerY)}px`;
-        item.wrap.style.transform = 'translate(-50%, -50%) scale(0.75)';
-      });
+        item.wrap.style.transform = 'translate(-50%, -50%) scale(0.68) rotate(0deg)';
+        soundFx.playShuffle();
+      }, idx * 90);
     });
 
-    // Requirement #3: Sequential 3D Flip from 0 (Leader) to 5 (Last Member) - slower, graceful pacing
-    const initialPause = 900;
+    // Requirement #3: Sequential 3D Flip from 0 (Leader) to 5 (Last Member) after all cards are dealt
+    const initialPause = 90 * wrappers.length + 650;
     const flipInterval = 620;
 
     wrappers.forEach((item, idx) => {
@@ -410,11 +415,25 @@ function spotlightAllLeadersRow() {
       const wrap = createFlyingCardWrapper(item.member);
       flyingCardsLayer.appendChild(wrap);
 
+      wrap.style.transition = 'none';
       wrap.style.left = `${startX}px`;
       wrap.style.top = `${startY}px`;
-      wrap.style.transform = 'translate(-50%, -50%) scale(0.35)';
+      wrap.style.transform = `translate(-50%, -50%) scale(0.35) rotate(${idx * -2.5}deg)`;
 
       wrappers.push({ ...item, wrap, inner: wrap.querySelector('.flying-card-inner'), targetX: centerX + offsets[idx] });
+    });
+
+    void wrappers[0].wrap.offsetHeight;
+
+    // Staggered dealing out of leader cards from the deck
+    wrappers.forEach((item, idx) => {
+      setTimeout(() => {
+        item.wrap.style.transition = 'all 0.65s cubic-bezier(0.2, 0.9, 0.25, 1)';
+        item.wrap.style.left = `${Math.round(item.targetX)}px`;
+        item.wrap.style.top = `${Math.round(centerY)}px`;
+        item.wrap.style.transform = 'translate(-50%, -50%) scale(0.84) rotate(0deg)';
+        soundFx.playShuffle();
+      }, idx * 100);
     });
 
     // Team Identification Banners (Placed higher to never overlap card badges!)
@@ -422,7 +441,7 @@ function spotlightAllLeadersRow() {
     const banners = [
       { text: '1팀 리더', cls: 'team-1-banner', x: centerX - 570 },
       { text: '2팀 리더', cls: 'team-2-banner', x: centerX - 60 },
-      { text: '3팀 공동리더', cls: 'team-3-banner', x: centerX + 415 }
+      { text: '3팀 리더', cls: 'team-3-banner', x: centerX + 415 }
     ];
 
     const bannerEls = [];
@@ -436,17 +455,9 @@ function spotlightAllLeadersRow() {
       bannerEls.push(bannerEl);
     });
 
-    soundFx.playShuffle();
-
-    // Fly out to center with pixel precision
-    requestAnimationFrame(() => {
-      wrappers.forEach((item) => {
-        item.wrap.style.left = `${Math.round(item.targetX)}px`;
-        item.wrap.style.top = `${Math.round(centerY)}px`;
-        item.wrap.style.transform = 'translate(-50%, -50%) scale(0.84)';
-      });
+    setTimeout(() => {
       bannerEls.forEach(el => el.classList.add('visible'));
-    });
+    }, wrappers.length * 100 + 100);
 
     // Requirement #3: Pause on card backs first (800ms) then flip with 680ms pacing!
     const initialPause = 800;
@@ -546,17 +557,19 @@ function spotlightSingleCard(member, targetRow, teamHeader) {
     const inner = flyingWrap.querySelector('.flying-card-inner');
     flyingCardsLayer.appendChild(flyingWrap);
 
+    flyingWrap.style.transition = 'none';
     flyingWrap.style.left = `${startX}px`;
     flyingWrap.style.top = `${startY}px`;
-    flyingWrap.style.transform = 'translate(-50%, -50%) scale(0.35)';
+    flyingWrap.style.transform = 'translate(-50%, -50%) scale(0.35) rotate(-6deg)';
+    void flyingWrap.offsetHeight;
 
-    soundFx.playShuffle();
-
-    requestAnimationFrame(() => {
+    setTimeout(() => {
+      flyingWrap.style.transition = 'all 0.65s cubic-bezier(0.2, 0.9, 0.25, 1)';
       flyingWrap.style.left = `${Math.round(centerX)}px`;
       flyingWrap.style.top = `${Math.round(centerY)}px`;
-      flyingWrap.style.transform = 'translate(-50%, -50%) scale(1)';
-    });
+      flyingWrap.style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg)';
+      soundFx.playShuffle();
+    }, 40);
 
     // Requirement #3: 750ms pause on back for suspense, then 3D flip
     setTimeout(() => {
@@ -689,22 +702,24 @@ function spotlightPairCards(member1, member2, targetRow, teamHeader) {
     flyingCardsLayer.appendChild(wrap1);
     flyingCardsLayer.appendChild(wrap2);
 
-    [wrap1, wrap2].forEach(w => {
+    [wrap1, wrap2].forEach((w, idx) => {
+      w.style.transition = 'none';
       w.style.left = `${startX}px`;
       w.style.top = `${startY}px`;
-      w.style.transform = 'translate(-50%, -50%) scale(0.35)';
+      w.style.transform = `translate(-50%, -50%) scale(0.35) rotate(${idx === 0 ? -5 : 5}deg)`;
     });
 
-    soundFx.playShuffle();
+    void wrap1.offsetHeight;
 
-    requestAnimationFrame(() => {
-      wrap1.style.left = `${Math.round(center1X)}px`;
-      wrap1.style.top = `${Math.round(centerY)}px`;
-      wrap1.style.transform = 'translate(-50%, -50%) scale(0.95)';
-
-      wrap2.style.left = `${Math.round(center2X)}px`;
-      wrap2.style.top = `${Math.round(centerY)}px`;
-      wrap2.style.transform = 'translate(-50%, -50%) scale(0.95)';
+    [wrap1, wrap2].forEach((w, idx) => {
+      setTimeout(() => {
+        w.style.transition = 'all 0.65s cubic-bezier(0.2, 0.9, 0.25, 1)';
+        const targetX = idx === 0 ? center1X : center2X;
+        w.style.left = `${Math.round(targetX)}px`;
+        w.style.top = `${Math.round(centerY)}px`;
+        w.style.transform = 'translate(-50%, -50%) scale(0.95) rotate(0deg)';
+        soundFx.playShuffle();
+      }, idx * 110);
     });
 
     // Requirement #3: Card 1 flips after 750ms pause, Card 2 flips 680ms later!
@@ -820,13 +835,13 @@ function clearAutoAdvanceTimer() {
 /**
  * Requirement #3: 팀장 공개를 제외하고는 5초가 지나면 자동으로 넘어가게 설정
  */
-function scheduleAutoAdvance(delayMs = 5000) {
+function scheduleAutoAdvance(delayMs = 3000) {
   clearAutoAdvanceTimer();
-  // 팀장 공개 대기 상태(currentStep === 3)는 제외!
+  // Requirement #3: 팀장 공개 대기 상태(currentStep === 3)는 제외!
   if (currentStep === 3) return;
 
   autoAdvanceTimer = setTimeout(() => {
-    if (!isBusy && btnDealerAction && !btnDealerAction.disabled && btnDealerAction.style.display !== 'none') {
+    if (!isBusy) {
       handleMasterStep();
     }
   }, delayMs);
@@ -855,7 +870,8 @@ async function handleMasterStep() {
     currentStep = 1;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>카드 정리 & 팀 빌딩 시작</span> ➔`;
-    scheduleAutoAdvance(5000);
+    // Requirement #2: 1트랙의 경우에는 자동으로 넘어가는 기능을 8초로 진행
+    scheduleAutoAdvance(8000);
     return;
   }
 
@@ -872,7 +888,7 @@ async function handleMasterStep() {
     currentStep = 3;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>팀장 안착</span> ➔`;
-    // Requirement #3: 팀장 공개는 사용자가 직접 넘길 때까지 5초 타이머 제외!
+    // Requirement #3: 팀장 공개는 사용자가 직접 넘길 때까지 5초/3초 타이머 제외!
     return;
   }
 
@@ -893,7 +909,8 @@ async function handleMasterStep() {
     currentStep = 5;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>2팀 선발</span> ➔`;
-    scheduleAutoAdvance(5000);
+    // Requirement #1: 3초 후 자동 진행
+    scheduleAutoAdvance(3000);
     return;
   }
 
@@ -908,7 +925,7 @@ async function handleMasterStep() {
     currentStep = 6;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>3팀 선발</span> ➔`;
-    scheduleAutoAdvance(5000);
+    scheduleAutoAdvance(3000);
     return;
   }
 
@@ -923,7 +940,7 @@ async function handleMasterStep() {
     currentStep = 7;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>선발 안착</span> ➔`;
-    scheduleAutoAdvance(5000);
+    scheduleAutoAdvance(3000);
     return;
   }
 
@@ -964,7 +981,7 @@ async function handleMasterStep() {
         btnDealerAction.innerHTML = `<span>팀원 안착</span> ➔`;
       }
       currentStep++;
-      scheduleAutoAdvance(5000);
+      scheduleAutoAdvance(3000);
       return;
     }
 
@@ -1056,14 +1073,35 @@ function openSingleCardInspector(member) {
     inspectCardStage.style.transform = `perspective(1000px) rotateX(${curRotX.toFixed(2)}deg) rotateY(${curRotY.toFixed(2)}deg) scale3d(${scaleVal}, ${scaleVal}, ${scaleVal})`;
     inspectCardStage.style.boxShadow = `${shadowX.toFixed(1)}px ${shadowY.toFixed(1)}px 50px rgba(0, 0, 0, 0.95), 0 0 32px var(--lion-orange-glow)`;
 
-    // Tier-Specific High-Fidelity Holographic Sheen (Requirement #4)
-    const gx = curGlareX;
-    const gy = curGlareY;
-    const ga = curGlareAngle;
-    const tier = member.cardTier || 'regular';
+    // Requirement #5 & #9: 1트랙은 포켓몬 시크릿 레어 프리즘 회절 포일, 2트랙은 팀장(골드) & 팀원(코스믹 바이올렛 오로라) 통일
+    const isTrack1 = Boolean(member.id && member.id.startsWith('t1-')) ||
+                     member.cardTheme === 'track1-cyan' ||
+                     (member.targetTeamId === 'team-1' && member.id && member.id.startsWith('t1-'));
 
     let gradientStyle = '';
-    if (tier === 'leader') {
+    if (isTrack1) {
+      // 1트랙 전용: 포켓몬 시크릿 레어 / 얼트 레어 스타일 사이버네틱 프리즘 회절 포일 (Secret Rare Prismatic Diffraction Grating Foil)
+      gradientStyle = `
+        repeating-linear-gradient(${ga.toFixed(1)}deg,
+          rgba(0, 229, 255, 0.42) 0px,
+          rgba(168, 85, 247, 0.45) 10px,
+          rgba(244, 63, 94, 0.45) 20px,
+          rgba(251, 191, 36, 0.42) 30px,
+          rgba(52, 211, 153, 0.45) 40px,
+          rgba(0, 229, 255, 0.42) 50px),
+        linear-gradient(${(ga + 75).toFixed(1)}deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.15) ${Math.max(0, gx - 32).toFixed(1)}%,
+          rgba(255, 255, 255, 0.98) ${gx.toFixed(1)}%,
+          rgba(0, 229, 255, 0.75) ${Math.min(100, gx + 28).toFixed(1)}%,
+          transparent 100%),
+        radial-gradient(circle at ${gx.toFixed(1)}% ${gy.toFixed(1)}%,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(0, 229, 255, 0.7) 22%,
+          rgba(168, 85, 247, 0.45) 45%,
+          transparent 75%)
+      `;
+    } else if (tier === 'leader') {
       // 1. 팀장: 찬란한 24K 골드 & 앰버 오렌지 & 루비 골드 썬버스트
       gradientStyle = `
         linear-gradient(${ga.toFixed(1)}deg,
@@ -1079,24 +1117,8 @@ function openSingleCardInspector(member) {
           rgba(255, 140, 20, 0.45) 35%,
           transparent 75%)
       `;
-    } else if (tier === 'priority') {
-      // 2. 선발인원: 플래티넘 시안 블루 & 네온 일렉트릭 에메랄드 프리즘
-      gradientStyle = `
-        linear-gradient(${ga.toFixed(1)}deg,
-          transparent 0%,
-          rgba(210, 250, 255, 0.08) ${Math.max(0, gx - 45).toFixed(1)}%,
-          rgba(56, 189, 248, 0.85) ${Math.max(0, gx - 18).toFixed(1)}%,
-          rgba(255, 255, 255, 0.98) ${gx.toFixed(1)}%,
-          rgba(45, 212, 191, 0.8) ${Math.min(100, gx + 18).toFixed(1)}%,
-          rgba(99, 102, 241, 0.5) ${Math.min(100, gx + 42).toFixed(1)}%,
-          transparent 100%),
-        radial-gradient(circle at ${gx.toFixed(1)}% ${gy.toFixed(1)}%,
-          rgba(255, 255, 255, 0.85) 0%,
-          rgba(56, 189, 248, 0.45) 35%,
-          transparent 75%)
-      `;
     } else {
-      // 3. 팀원: 코스믹 오로라 펄 & 네온 마젠타 & 바이올렛 오로라
+      // 2. 팀원 (우선선발 & 일반 팀원 디자인 통일): 코스믹 오로라 펄 & 네온 마젠타 & 바이올렛 오로라
       gradientStyle = `
         linear-gradient(${ga.toFixed(1)}deg,
           transparent 0%,
@@ -1195,10 +1217,11 @@ function openFocusShowcase(teamIndex = 0) {
   ];
 
   const theme = getActiveCardTheme();
-  all.forEach(m => {
+  all.forEach((m, idx) => {
     const cardEl = document.createElement('div');
     cardEl.className = `poker-card-element ${theme === 'track1-cyan' ? 'theme-track1' : 'theme-track2'}`;
     cardEl.setAttribute('title', `${m.name} 클릭 시 3D 확대 뷰`);
+    cardEl.style.animationDelay = `${idx * 60}ms`;
     cardEl.innerHTML = `
       ${getLikeLionCardBackHtml(theme)}
       ${getCardFrontHtml(m, theme)}
@@ -1212,6 +1235,7 @@ function openFocusShowcase(teamIndex = 0) {
   });
 
   teamFocusModal.classList.add('active');
+  soundFx.playShuffle();
 }
 
 /**
@@ -1277,9 +1301,9 @@ function resetApplication() {
   teamFocusModal.classList.remove('active');
   closeSingleCardInspector();
 
-  btnDealerAction.style.display = 'inline-flex';
+  // Requirement #3: 진행 버튼 제거 (빈공간 클릭으로만 진행)
+  btnDealerAction.style.display = 'none';
   btnDealerAction.disabled = false;
-  btnDealerAction.innerHTML = `<span>1팀 공개</span> ➔`;
   btnShowcaseOpen.style.display = 'none';
 }
 
@@ -1349,7 +1373,7 @@ function init() {
   btnDealerAction.addEventListener('click', handleMasterStep);
   btnShowcaseOpen.addEventListener('click', () => openFocusShowcase(0));
 
-  // Requirement #2: 웹사이트 빈 곳 클릭 시 다음 단계로 진행 (버튼 클릭과 동일 효과)
+  // Requirement #3: 웹사이트 빈 곳 클릭 시 다음 단계로 진행 (버튼 제거 대응)
   window.addEventListener('click', (e) => {
     if (
       teamFocusModal.classList.contains('active') ||
@@ -1359,14 +1383,23 @@ function init() {
       return;
     }
 
-    if (e.target.closest('button, input, select, textarea, .hud-tools-cluster, .track1-stash-dock, .cards-deck-row .poker-card-element')) {
+    if (e.target.closest('button, input, select, textarea, .hud-tools-cluster, .track1-stash-dock, .cards-deck-row .poker-card-element, .team-felt-header')) {
       return;
     }
 
     if (isBusy) return;
-    if (!btnDealerAction || btnDealerAction.disabled || btnDealerAction.style.display === 'none') return;
+    if (currentStep >= 999) return;
 
     handleMasterStep();
+  });
+
+  // Requirement #8: 각 팀 헤더 및 돋보기 클릭 시 팀별 쇼케이스 열기
+  document.querySelectorAll('.team-felt-header').forEach(header => {
+    header.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const teamIdx = parseInt(header.getAttribute('data-team-idx') || '0', 10);
+      openFocusShowcase(teamIdx);
+    });
   });
 
   if (hudTrackLabel) {

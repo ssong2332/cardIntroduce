@@ -155,11 +155,12 @@ export function getCardFrontHtml(member, trackTheme = 'track2') {
   let tierClass = 'tier-regular';
 
   if (tier === 'leader') {
-    tierBadge = member.isCoLeader ? '👑 공동팀장' : '👑 팀장';
+    tierBadge = '👑 팀장';
     tierClass = 'tier-leader';
-  } else if (tier === 'priority') {
-    tierBadge = '⭐ 우선선발';
-    tierClass = 'tier-priority';
+  } else {
+    // Requirement #5: 우선 선발되는 인원과 일반 팀원의 디자인을 동일하게 '팀원'으로 사용
+    tierBadge = '팀원';
+    tierClass = 'tier-regular';
   }
 
   const themeClass = isTrack1 ? 'card-front-track1' : 'card-front-track2';

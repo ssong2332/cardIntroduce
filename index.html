@@ -56,8 +56,8 @@
         <div class="table-teams-arena">
           <!-- 1팀 -->
           <div class="team-felt-pod pod-1" id="pod-team-1">
-            <div class="team-felt-header" id="header-team-1">
-              <h2 class="team-felt-title">1팀</h2>
+            <div class="team-felt-header" id="header-team-1" data-team-idx="0" title="1팀 전체 라인업 크게 보기">
+              <h2 class="team-felt-title">1팀 <span class="team-showcase-trigger">🔍</span></h2>
             </div>
             <div class="cards-row-group">
               <!-- Top: Leader -->
@@ -71,8 +71,8 @@
 
           <!-- 2팀 -->
           <div class="team-felt-pod pod-2" id="pod-team-2">
-            <div class="team-felt-header" id="header-team-2">
-              <h2 class="team-felt-title">2팀</h2>
+            <div class="team-felt-header" id="header-team-2" data-team-idx="1" title="2팀 전체 라인업 크게 보기">
+              <h2 class="team-felt-title">2팀 <span class="team-showcase-trigger">🔍</span></h2>
             </div>
             <div class="cards-row-group">
               <!-- Top: Leader -->
@@ -86,11 +86,11 @@
 
           <!-- 3팀 -->
           <div class="team-felt-pod pod-3" id="pod-team-3">
-            <div class="team-felt-header" id="header-team-3">
-              <h2 class="team-felt-title">3팀</h2>
+            <div class="team-felt-header" id="header-team-3" data-team-idx="2" title="3팀 전체 라인업 크게 보기">
+              <h2 class="team-felt-title">3팀 <span class="team-showcase-trigger">🔍</span></h2>
             </div>
             <div class="cards-row-group">
-              <!-- Top: Co-Leaders -->
+              <!-- Top: Leader -->
               <div class="cards-deck-row" id="row-leader-team-3"></div>
               <!-- Mid: Priority -->
               <div class="cards-deck-row" id="row-priority-team-3"></div>
@@ -112,14 +112,12 @@
         </div>
       </div>
 
-      <!-- Main Dealer Action Button -->
-      <button class="btn-dealer-main hud-btn-main" id="btn-dealer-action">
-        <span>1팀 공개</span> ➔
+      <!-- Hidden Master Action Elements (Maintained for logic compatibility, operated via empty space click) -->
+      <button class="btn-dealer-main hud-btn-main" id="btn-dealer-action" style="display: none !important;">
+        <span>진행</span>
       </button>
-
-      <!-- 1팀씩 크게 보기 Button -->
-      <button class="btn-table-showcase hud-btn-showcase" id="btn-showcase-open" style="display: none;">
-        🔍 1팀씩 크게 보기
+      <button class="btn-table-showcase hud-btn-showcase" id="btn-showcase-open" style="display: none !important;">
+        🔍
       </button>
 
       <!-- Side Tools Cluster: 설정, 소리, 리셋 -->

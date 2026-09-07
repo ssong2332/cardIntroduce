@@ -542,14 +542,23 @@ html, body {
   min-height: 0;
 }
 
-/* Team Header */
+/* Team Header with Clickable Showcase Trigger */
 .team-felt-header {
   text-align: center;
   margin-bottom: 6px;
   flex-shrink: 0;
   opacity: 0;
   transform: translateY(-6px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.team-felt-header:hover {
+  transform: translateY(-2px) scale(1.05);
 }
 
 .team-felt-header.visible {
@@ -563,6 +572,26 @@ html, body {
   font-weight: 900;
   letter-spacing: 2px;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.team-showcase-trigger {
+  font-size: 0.72rem;
+  opacity: 0.7;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.team-felt-header:hover .team-showcase-trigger {
+  opacity: 1;
+  background: rgba(255, 119, 16, 0.3);
+  border-color: #FF7710;
+  transform: scale(1.15);
 }
 
 .pod-1 .team-felt-title { color: #FF7710; }
@@ -1113,6 +1142,17 @@ html, body {
 }
 
 /* Large Cards Inside Per-Team Showcase (Strict 100:145 Poker Card Ratio) */
+@keyframes showcaseCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .focus-body-cards .poker-card-element {
   width: 220px !important;
   height: 319px !important;
@@ -1120,6 +1160,7 @@ html, body {
   aspect-ratio: 100 / 145;
   border-radius: 12px;
   flex-shrink: 0;
+  animation: showcaseCardEnter 0.45s cubic-bezier(0.2, 0.9, 0.25, 1) both;
 }
 
 .focus-body-cards .poker-card-front {
@@ -1136,8 +1177,25 @@ html, body {
 .focus-body-cards .person-meta-content { height: auto; margin-bottom: 6px; }
 .focus-body-cards .person-name-text { font-size: 1.55rem; margin-bottom: 6px; }
 .focus-body-cards .person-role-text { font-size: 1.0rem; margin-bottom: 8px; }
-.focus-body-cards .person-tags-wrap { height: auto !important; max-height: none !important; gap: 6px; }
-.focus-body-cards .person-tag-pill { font-size: 0.8rem; padding: 3px 9px; border-radius: 4px; max-width: none !important; }
+.focus-body-cards .person-tags-wrap {
+  height: auto !important;
+  max-height: none !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 5px 6px !important;
+  overflow: visible !important;
+}
+.focus-body-cards .person-tag-pill {
+  font-size: 0.76rem !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+}
 
 /* ==========================================================================
    SINGLE CARD 3D TILT INSPECTOR MODAL
@@ -1208,8 +1266,25 @@ html, body {
 .inspect-card-stage .person-meta-content { height: auto; margin-bottom: 8px; }
 .inspect-card-stage .person-name-text { font-size: 1.95rem; margin-bottom: 6px; }
 .inspect-card-stage .person-role-text { font-size: 1.15rem; margin-bottom: 14px; }
-.inspect-card-stage .person-tags-wrap { height: auto !important; max-height: none !important; gap: 8px; }
-.inspect-card-stage .person-tag-pill { font-size: 0.88rem; padding: 4px 12px; border-radius: 5px; max-width: none !important; }
+.inspect-card-stage .person-tags-wrap {
+  height: auto !important;
+  max-height: none !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px 8px !important;
+  overflow: visible !important;
+}
+.inspect-card-stage .person-tag-pill {
+  font-size: 0.82rem !important;
+  padding: 4px 10px !important;
+  border-radius: 5px !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  text-overflow: unset !important;
+  overflow: visible !important;
+}
 
 /* Dynamic 3D Prism Hologram Glare / Sheen Layer */
 .inspect-dynamic-glare {
@@ -1219,26 +1294,32 @@ html, body {
   pointer-events: none;
   mix-blend-mode: screen;
   opacity: 0.92;
-  background: 
-    linear-gradient(115deg, transparent 15%, rgba(255, 255, 255, 0.5) 35%, rgba(255, 205, 80, 0.7) 48%, rgba(80, 220, 255, 0.65) 60%, transparent 85%),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 160, 50, 0.35) 40%, transparent 70%);
   transition: opacity 0.15s ease;
   z-index: 20;
   transform: translateZ(2px);
 }
 
+/* Requirement #7: 마우스 커서 반응 안내 문구를 화면 우측 하단 구석으로 배치 */
 .inspect-instruction-pill {
-  margin-top: 20px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-size: 0.82rem;
-  color: #cbd5e1;
+  position: fixed;
+  bottom: 24px;
+  right: 28px;
+  margin: 0;
+  background: rgba(10, 14, 22, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 6px 14px;
+  border-radius: 18px;
+  font-size: 0.76rem;
+  color: #94a3b8;
   letter-spacing: 0.3px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+  z-index: 6010;
 }
 
 .btn-inspect-close {
