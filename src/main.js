@@ -1073,6 +1073,12 @@ function openSingleCardInspector(member) {
     inspectCardStage.style.transform = `perspective(1000px) rotateX(${curRotX.toFixed(2)}deg) rotateY(${curRotY.toFixed(2)}deg) scale3d(${scaleVal}, ${scaleVal}, ${scaleVal})`;
     inspectCardStage.style.boxShadow = `${shadowX.toFixed(1)}px ${shadowY.toFixed(1)}px 50px rgba(0, 0, 0, 0.95), 0 0 32px var(--lion-orange-glow)`;
 
+    // Tier-Specific High-Fidelity Holographic Sheen (Requirement #4 & #9)
+    const gx = curGlareX;
+    const gy = curGlareY;
+    const ga = curGlareAngle;
+    const tier = member.cardTier || 'regular';
+
     // Requirement #5 & #9: 1트랙은 포켓몬 시크릿 레어 프리즘 회절 포일, 2트랙은 팀장(골드) & 팀원(코스믹 바이올렛 오로라) 통일
     const isTrack1 = Boolean(member.id && member.id.startsWith('t1-')) ||
                      member.cardTheme === 'track1-cyan' ||
@@ -1175,11 +1181,10 @@ function openSingleCardInspector(member) {
     isHovered = false;
   }
 
-  inspectCardStage.onmousemove = onPointerMove;
-  inspectCardStage.onmouseleave = onPointerLeave;
-
-  inspectCardStage.ontouchmove = onPointerMove;
-  inspectCardStage.ontouchend = onPointerLeave;
+  cardInspectModal.onmousemove = onPointerMove;
+  cardInspectModal.onmouseleave = onPointerLeave;
+  cardInspectModal.ontouchmove = onPointerMove;
+  cardInspectModal.ontouchend = onPointerLeave;
 }
 
 function closeSingleCardInspector() {
@@ -1188,10 +1193,10 @@ function closeSingleCardInspector() {
     cancelAnimationFrame(inspectorAnimFrame);
     inspectorAnimFrame = null;
   }
-  inspectCardStage.onmousemove = null;
-  inspectCardStage.onmouseleave = null;
-  inspectCardStage.ontouchmove = null;
-  inspectCardStage.ontouchend = null;
+  cardInspectModal.onmousemove = null;
+  cardInspectModal.onmouseleave = null;
+  cardInspectModal.ontouchmove = null;
+  cardInspectModal.ontouchend = null;
 }
 
 /**
@@ -1271,7 +1276,7 @@ function resetApplication() {
 
   const header1Title = headers.team1?.querySelector('.team-felt-title');
   if (header1Title) {
-    header1Title.textContent = '1팀';
+    header1Title.innerHTML = '1팀 <span class="team-showcase-trigger">🔍</span>';
   }
 
   // Requirement #3 & #4: 카드 뭉치 복원 및 1트랙 사이버 사파이어 테마로 초기화

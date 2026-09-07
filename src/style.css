@@ -1160,7 +1160,18 @@ html, body {
   aspect-ratio: 100 / 145;
   border-radius: 12px;
   flex-shrink: 0;
+  transform: none !important;
   animation: showcaseCardEnter 0.45s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+
+.focus-body-cards .poker-card-element:hover {
+  transform: translateY(-8px) scale(1.05) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.95), 0 0 20px var(--lion-orange-glow);
+}
+
+/* Ensure showcase cards NEVER show backface: back is hidden, front is 100% visible */
+.focus-body-cards .poker-card-back {
+  display: none !important;
 }
 
 .focus-body-cards .poker-card-front {
@@ -1168,6 +1179,9 @@ html, body {
   max-height: 100% !important;
   padding: 18px 16px;
   border-radius: 12px;
+  transform: none !important;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
 }
 
 .focus-body-cards .person-top-bar { margin-bottom: 10px; }
