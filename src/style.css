@@ -893,7 +893,22 @@ html, body {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 52px;
+  max-width: 56px;
+}
+
+.tags-few .person-tag-pill {
+  font-size: 0.60rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  max-width: 72px;
+}
+
+.tag-more-pill {
+  background: rgba(255, 119, 16, 0.2) !important;
+  border-color: rgba(255, 119, 16, 0.65) !important;
+  color: #fed7aa !important;
+  font-weight: 800 !important;
+  cursor: help;
 }
 
 .card-sheen-overlay {
@@ -1006,13 +1021,13 @@ html, body {
 }
 
 /* Large text inside Flying Card - Force crisp hardware rasterization & adaptive tag capacity */
-.flying-card-inner .person-top-bar { margin-bottom: 6px; }
-.flying-card-inner .person-tier-badge { font-size: 0.80rem; padding: 3px 10px; border-radius: 5px; transform: translateZ(2px); }
-.flying-card-inner .person-avatar-frame { height: 96px !important; margin-bottom: 8px; border-radius: 8px; transform: translateZ(2px); }
-.flying-card-inner .person-avatar-img { width: 80px; height: 80px; image-rendering: -webkit-optimize-contrast; }
-.flying-card-inner .person-meta-content { height: auto; margin-bottom: 4px; transform: translateZ(2px); }
-.flying-card-inner .person-name-text { font-size: 1.45rem; margin-bottom: 3px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
-.flying-card-inner .person-role-text { font-size: 0.92rem; margin-bottom: 6px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+.flying-card-inner .person-top-bar { margin-bottom: 8px; }
+.flying-card-inner .person-tier-badge { font-size: 0.85rem; padding: 4px 12px; border-radius: 6px; transform: translateZ(2px); }
+.flying-card-inner .person-avatar-frame { height: 116px !important; margin-bottom: 10px; border-radius: 10px; transform: translateZ(2px); }
+.flying-card-inner .person-avatar-img { width: 92px; height: 92px; image-rendering: -webkit-optimize-contrast; }
+.flying-card-inner .person-meta-content { height: auto; margin-bottom: 6px; transform: translateZ(2px); }
+.flying-card-inner .person-name-text { font-size: 1.60rem; margin-bottom: 4px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+.flying-card-inner .person-role-text { font-size: 0.98rem; margin-bottom: 8px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
 .flying-card-inner .person-tags-wrap {
   height: auto !important;
   max-height: none !important;
@@ -1020,20 +1035,27 @@ html, body {
   flex-wrap: wrap !important;
   justify-content: center !important;
   align-items: center !important;
-  gap: 4px 5px !important;
+  gap: 5px 6px !important;
   overflow: visible !important;
   margin-top: 2px;
   transform: translateZ(2px);
 }
 .flying-card-inner .person-tag-pill {
-  font-size: 0.70rem !important;
-  padding: 2.5px 7px !important;
+  font-size: 0.78rem !important;
+  padding: 3px 8.5px !important;
   border-radius: 4px !important;
   max-width: none !important;
   white-space: nowrap !important;
   text-overflow: unset !important;
   overflow: visible !important;
-  line-height: 1.2;
+  line-height: 1.25;
+}
+/* 스택이 1~2개일 때 크게 표현하여 눈에 띄게 강조 */
+.flying-card-inner .tags-few .person-tag-pill {
+  font-size: 0.88rem !important;
+  padding: 4.5px 12px !important;
+  font-weight: 700 !important;
+  border-radius: 5px !important;
 }
 
 /* Track Switcher (1트랙 / 2트랙) */
@@ -1184,13 +1206,13 @@ html, body {
   -webkit-backface-visibility: visible !important;
 }
 
-.focus-body-cards .person-top-bar { margin-bottom: 6px; }
-.focus-body-cards .person-tier-badge { font-size: 0.80rem; padding: 3px 10px; border-radius: 5px; }
-.focus-body-cards .person-avatar-frame { height: 92px !important; margin-bottom: 8px; border-radius: 8px; }
-.focus-body-cards .person-avatar-img { width: 78px; height: 78px; }
+.focus-body-cards .person-top-bar { margin-bottom: 8px; }
+.focus-body-cards .person-tier-badge { font-size: 0.84rem; padding: 4px 12px; border-radius: 6px; }
+.focus-body-cards .person-avatar-frame { height: 110px !important; margin-bottom: 8px; border-radius: 10px; }
+.focus-body-cards .person-avatar-img { width: 88px; height: 88px; }
 .focus-body-cards .person-meta-content { height: auto; margin-bottom: 4px; }
-.focus-body-cards .person-name-text { font-size: 1.35rem; margin-bottom: 3px; }
-.focus-body-cards .person-role-text { font-size: 0.88rem; margin-bottom: 6px; }
+.focus-body-cards .person-name-text { font-size: 1.48rem; margin-bottom: 4px; }
+.focus-body-cards .person-role-text { font-size: 0.95rem; margin-bottom: 6px; }
 .focus-body-cards .person-tags-wrap {
   height: auto !important;
   max-height: none !important;
@@ -1198,19 +1220,26 @@ html, body {
   flex-wrap: wrap !important;
   justify-content: center !important;
   align-items: center !important;
-  gap: 4px 5px !important;
+  gap: 5px 6px !important;
   overflow: visible !important;
   margin-top: 2px;
 }
 .focus-body-cards .person-tag-pill {
-  font-size: 0.68rem !important;
-  padding: 2.5px 6.5px !important;
+  font-size: 0.76rem !important;
+  padding: 3px 8.5px !important;
   border-radius: 4px !important;
   max-width: none !important;
   white-space: nowrap !important;
   text-overflow: unset !important;
   overflow: visible !important;
-  line-height: 1.2;
+  line-height: 1.25;
+}
+/* 쇼케이스에서 스택이 1~2개일 때 크고 뚜렷하게 표현 */
+.focus-body-cards .tags-few .person-tag-pill {
+  font-size: 0.86rem !important;
+  padding: 4.5px 12px !important;
+  font-weight: 700 !important;
+  border-radius: 5px !important;
 }
 
 /* ==========================================================================
@@ -1275,13 +1304,13 @@ html, body {
   border-radius: 14px;
 }
 
-.inspect-card-stage .person-top-bar { margin-bottom: 8px; }
-.inspect-card-stage .person-tier-badge { font-size: 0.88rem; padding: 4px 12px; border-radius: 6px; }
-.inspect-card-stage .person-avatar-frame { height: 126px !important; margin-bottom: 10px; border-radius: 10px; }
-.inspect-card-stage .person-avatar-img { width: 102px; height: 102px; }
-.inspect-card-stage .person-meta-content { height: auto; margin-bottom: 4px; }
-.inspect-card-stage .person-name-text { font-size: 1.65rem; margin-bottom: 4px; }
-.inspect-card-stage .person-role-text { font-size: 1.0rem; margin-bottom: 8px; }
+.inspect-card-stage .person-top-bar { margin-bottom: 10px; }
+.inspect-card-stage .person-tier-badge { font-size: 0.92rem; padding: 4px 14px; border-radius: 6px; }
+.inspect-card-stage .person-avatar-frame { height: 148px !important; margin-bottom: 12px; border-radius: 12px; }
+.inspect-card-stage .person-avatar-img { width: 118px; height: 118px; }
+.inspect-card-stage .person-meta-content { height: auto; margin-bottom: 6px; }
+.inspect-card-stage .person-name-text { font-size: 1.85rem; margin-bottom: 4px; }
+.inspect-card-stage .person-role-text { font-size: 1.10rem; margin-bottom: 10px; }
 .inspect-card-stage .person-tags-wrap {
   height: auto !important;
   max-height: none !important;
@@ -1289,19 +1318,26 @@ html, body {
   flex-wrap: wrap !important;
   justify-content: center !important;
   align-items: center !important;
-  gap: 4px 6px !important;
+  gap: 5px 7px !important;
   overflow: visible !important;
   margin-top: 2px;
 }
 .inspect-card-stage .person-tag-pill {
-  font-size: 0.74rem !important;
-  padding: 3px 8px !important;
+  font-size: 0.82rem !important;
+  padding: 4px 10px !important;
   border-radius: 5px !important;
   max-width: none !important;
   white-space: nowrap !important;
   text-overflow: unset !important;
   overflow: visible !important;
   line-height: 1.25;
+}
+/* 3D 인스펙터에서 스택이 1~2개일 때 크게 표현하여 시원하게 표시 */
+.inspect-card-stage .tags-few .person-tag-pill {
+  font-size: 0.98rem !important;
+  padding: 6px 16px !important;
+  font-weight: 700 !important;
+  border-radius: 6px !important;
 }
 
 /* Dynamic 3D Prism Hologram Glare / Sheen Layer */

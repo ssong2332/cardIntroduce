@@ -150,6 +150,7 @@ export function getLikeLionCardBackHtml(trackTheme = 'track2') {
 export function getCardFrontHtml(member, trackTheme = 'track2') {
   const tier = member.cardTier || 'regular';
   const isTrack1 = trackTheme === 'track1' || trackTheme === 'track1-cyan';
+  const themeClass = isTrack1 ? 'card-front-track1' : 'card-front-track2';
 
   let tierBadge = '팀원';
   let tierClass = 'tier-regular';
@@ -163,11 +164,22 @@ export function getCardFrontHtml(member, trackTheme = 'track2') {
     tierClass = 'tier-regular';
   }
 
-  const themeClass = isTrack1 ? 'card-front-track1' : 'card-front-track2';
+  const rawTags = member.tags || [];
+  const tagCount = rawTags.length;
+  const tagCountClass = tagCount <= 2 ? 'tags-few' : (tagCount <= 4 ? 'tags-normal' : 'tags-many');
 
-  const tagsHtml = (member.tags || [])
+  // 스택이 5개 이상으로 많을 때는 상위 3개 스택 + '+N' 축약으로 깔끔하게 표시
+  let displayedTags = rawTags;
+  let morePillHtml = '';
+  if (tagCount > 4) {
+    displayedTags = rawTags.slice(0, 3);
+    const remaining = rawTags.slice(3);
+    morePillHtml = `<span class="person-tag-pill tag-more-pill" title="${remaining.join(', ')}">+${remaining.length}</span>`;
+  }
+
+  const tagsHtml = displayedTags
     .map(t => `<span class="person-tag-pill">${t}</span>`)
-    .join('');
+    .join('') + morePillHtml;
 
   return `
     <div class="card-face poker-card-front ${tierClass} ${themeClass}" data-member-id="${member.id}">
@@ -188,7 +200,7 @@ export function getCardFrontHtml(member, trackTheme = 'track2') {
       </div>
 
       <!-- 5. Tech Stack -->
-      <div class="person-tags-wrap">
+      <div class="person-tags-wrap ${tagCountClass}">
         ${tagsHtml}
       </div>
 
