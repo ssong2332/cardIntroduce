@@ -773,22 +773,28 @@ html, body {
 
 .card-front-track1 .person-name-text {
   color: #ffffff !important;
-  text-shadow: 0 0 10px rgba(0, 229, 255, 0.4) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 229, 255, 0.7) !important;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 
 .card-front-track1 .person-role-text {
   color: #00e5ff !important;
+  font-weight: 800 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
 }
 
 .card-front-track1.tier-regular .person-tier-badge {
   background: #0284c7 !important;
   color: #ffffff !important;
+  font-weight: 800 !important;
 }
 
 .card-front-track1 .person-tag-pill {
-  background: rgba(0, 229, 255, 0.12) !important;
-  border: 1px solid rgba(0, 229, 255, 0.35) !important;
-  color: #bae6fd !important;
+  background: rgba(0, 229, 255, 0.20) !important;
+  border: 1px solid rgba(0, 229, 255, 0.50) !important;
+  color: #e0f2fe !important;
+  font-weight: 700 !important;
 }
 
 /* Card Front Internal Layout Elements (Rigid Heights) */
@@ -980,7 +986,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto;
 }
 
 .flying-card-inner {
@@ -1020,11 +1026,28 @@ html, body {
   transform: rotateY(180deg);
 }
 
+/* Ultra Crisp Settled State: Eliminate 3D subpixel raster blur once 180-deg flip completes */
+.flying-card-inner.flip-settled {
+  transform: none !important;
+  transform-style: flat !important;
+  -webkit-transform-style: flat !important;
+}
+
+.flying-card-inner.flip-settled .poker-card-back {
+  display: none !important;
+}
+
+.flying-card-inner.flip-settled .poker-card-front {
+  transform: none !important;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
+}
+
 /* Large text inside Flying Card - Force crisp hardware rasterization & adaptive tag capacity */
 .flying-card-inner .person-top-bar { margin-bottom: 8px; }
 .flying-card-inner .person-tier-badge { font-size: 0.85rem; padding: 4px 12px; border-radius: 6px; transform: translateZ(2px); }
 .flying-card-inner .person-avatar-frame { height: 116px !important; margin-bottom: 10px; border-radius: 10px; transform: translateZ(2px); }
-.flying-card-inner .person-avatar-img { width: 92px; height: 92px; image-rendering: -webkit-optimize-contrast; }
+.flying-card-inner .person-avatar-img { width: 92px; height: 92px; image-rendering: auto !important; }
 .flying-card-inner .person-meta-content { height: auto; margin-bottom: 6px; transform: translateZ(2px); }
 .flying-card-inner .person-name-text { font-size: 1.60rem; margin-bottom: 4px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
 .flying-card-inner .person-role-text { font-size: 0.98rem; margin-bottom: 8px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }

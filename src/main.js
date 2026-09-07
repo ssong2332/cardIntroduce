@@ -162,6 +162,15 @@ function createFlyingCardWrapper(member) {
       ${getCardFrontHtml(member, theme)}
     </div>
   `;
+
+  // Allow clicking card once flip has settled to inspect in 3D
+  wrap.addEventListener('click', (e) => {
+    if (wrap.querySelector('.flying-card-inner.flip-settled')) {
+      e.stopPropagation();
+      openSingleCardInspector(member);
+    }
+  });
+
   return wrap;
 }
 
@@ -230,8 +239,8 @@ function spotlightTrack1FullRoster() {
     const centerX = Math.round(feltRect.left + feltRect.width / 2);
     const centerY = Math.round(feltRect.top + feltRect.height * 0.44);
 
-    // Requirement #2: 6 cards horizontally spaced with safe pitch (168px), strictly inside felt table
-    const offsets = [-420, -252, -84, 84, 252, 420];
+    // Requirement #2: 6 cards horizontally spaced with safe, generous pitch (192px), strictly inside felt table
+    const offsets = [-480, -288, -96, 96, 288, 480];
     const wrappers = [];
 
     allMembers.forEach((member, idx) => {
@@ -241,7 +250,7 @@ function spotlightTrack1FullRoster() {
       wrap.style.transition = 'none';
       wrap.style.left = `${startX}px`;
       wrap.style.top = `${startY}px`;
-      wrap.style.transform = `translate(-50%, -50%) scale(0.32) rotate(${idx * -2}deg)`;
+      wrap.style.transform = `translate(-50%, -50%) scale(0.35) rotate(${idx * -2}deg)`;
 
       wrappers.push({
         member,
@@ -253,13 +262,13 @@ function spotlightTrack1FullRoster() {
 
     void wrappers[0].wrap.offsetHeight;
 
-    // Staggered dealing out of 6 cards from the deck (Requirement #1: 카드 드로우 애니메이션 확실함)
+    // Staggered dealing out of 6 cards from the deck (scale 0.80 for large, crystal-clear readability)
     wrappers.forEach((item, idx) => {
       setTimeout(() => {
         item.wrap.style.transition = 'all 0.65s cubic-bezier(0.2, 0.9, 0.25, 1)';
         item.wrap.style.left = `${Math.round(item.targetX)}px`;
         item.wrap.style.top = `${Math.round(centerY)}px`;
-        item.wrap.style.transform = 'translate(-50%, -50%) scale(0.68) rotate(0deg)';
+        item.wrap.style.transform = 'translate(-50%, -50%) scale(0.80) rotate(0deg)';
         soundFx.playShuffle();
       }, idx * 90);
     });
@@ -273,6 +282,13 @@ function spotlightTrack1FullRoster() {
         item.inner.classList.add('is-flipped');
         soundFx.playFlip();
         particleEngine.spawnBurst(Math.round(item.targetX), Math.round(centerY), '#00e5ff', 24);
+
+        // Ultra-Crisp Settling: Once 180-deg flip completes (650ms), transition to native 2D rasterization (no subpixel blur)
+        setTimeout(() => {
+          item.inner.classList.add('flip-settled');
+          item.wrap.style.pointerEvents = 'auto';
+          item.wrap.style.cursor = 'pointer';
+        }, 650);
       }, initialPause + idx * flipInterval);
     });
 
@@ -468,6 +484,12 @@ function spotlightAllLeadersRow() {
         item.inner.classList.add('is-flipped');
         soundFx.playFlip();
         particleEngine.spawnBurst(Math.round(item.targetX), Math.round(centerY), '#FF7710', 28);
+
+        setTimeout(() => {
+          item.inner.classList.add('flip-settled');
+          item.wrap.style.pointerEvents = 'auto';
+          item.wrap.style.cursor = 'pointer';
+        }, 650);
       }, initialPause + idx * flipInterval);
     });
 
@@ -576,6 +598,12 @@ function spotlightSingleCard(member, targetRow, teamHeader) {
       inner.classList.add('is-flipped');
       soundFx.playFlip();
       particleEngine.spawnBurst(Math.round(centerX), Math.round(centerY), '#FF7710', 35);
+
+      setTimeout(() => {
+        inner.classList.add('flip-settled');
+        flyingWrap.style.pointerEvents = 'auto';
+        flyingWrap.style.cursor = 'pointer';
+      }, 650);
 
       currentSpotlight = {
         type: 'single',
