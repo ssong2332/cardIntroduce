@@ -163,9 +163,9 @@ function createFlyingCardWrapper(member) {
     </div>
   `;
 
-  // Allow clicking card once flip has settled to inspect in 3D
+  // Allow clicking card once flip has occurred to inspect in 3D
   wrap.addEventListener('click', (e) => {
-    if (wrap.querySelector('.flying-card-inner.flip-settled')) {
+    if (wrap.querySelector('.flying-card-inner.is-flipped')) {
       e.stopPropagation();
       openSingleCardInspector(member);
     }
@@ -282,13 +282,6 @@ function spotlightTrack1FullRoster() {
         item.inner.classList.add('is-flipped');
         soundFx.playFlip();
         particleEngine.spawnBurst(Math.round(item.targetX), Math.round(centerY), '#00e5ff', 24);
-
-        // Ultra-Crisp Settling: Once 180-deg flip completes (650ms), transition to native 2D rasterization (no subpixel blur)
-        setTimeout(() => {
-          item.inner.classList.add('flip-settled');
-          item.wrap.style.pointerEvents = 'auto';
-          item.wrap.style.cursor = 'pointer';
-        }, 650);
       }, initialPause + idx * flipInterval);
     });
 
@@ -484,12 +477,6 @@ function spotlightAllLeadersRow() {
         item.inner.classList.add('is-flipped');
         soundFx.playFlip();
         particleEngine.spawnBurst(Math.round(item.targetX), Math.round(centerY), '#FF7710', 28);
-
-        setTimeout(() => {
-          item.inner.classList.add('flip-settled');
-          item.wrap.style.pointerEvents = 'auto';
-          item.wrap.style.cursor = 'pointer';
-        }, 650);
       }, initialPause + idx * flipInterval);
     });
 
@@ -598,12 +585,6 @@ function spotlightSingleCard(member, targetRow, teamHeader) {
       inner.classList.add('is-flipped');
       soundFx.playFlip();
       particleEngine.spawnBurst(Math.round(centerX), Math.round(centerY), '#FF7710', 35);
-
-      setTimeout(() => {
-        inner.classList.add('flip-settled');
-        flyingWrap.style.pointerEvents = 'auto';
-        flyingWrap.style.cursor = 'pointer';
-      }, 650);
 
       currentSpotlight = {
         type: 'single',

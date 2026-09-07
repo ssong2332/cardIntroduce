@@ -1026,21 +1026,9 @@ html, body {
   transform: rotateY(180deg);
 }
 
-/* Ultra Crisp Settled State: Eliminate 3D subpixel raster blur once 180-deg flip completes */
-.flying-card-inner.flip-settled {
-  transform: none !important;
-  transform-style: flat !important;
-  -webkit-transform-style: flat !important;
-}
-
-.flying-card-inner.flip-settled .poker-card-back {
-  display: none !important;
-}
-
-.flying-card-inner.flip-settled .poker-card-front {
-  transform: none !important;
-  backface-visibility: visible !important;
-  -webkit-backface-visibility: visible !important;
+.flying-card-wrapper:has(.is-flipped) {
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* Large text inside Flying Card - Force crisp hardware rasterization & adaptive tag capacity */
