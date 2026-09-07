@@ -393,17 +393,18 @@ html, body {
    TRACK 1 VAULT STASH DOCK (Corner Vault on Felt Table)
    ========================================================================== */
 .track1-stash-dock {
-  position: absolute;
-  right: 28px;
-  top: 20px;
-  z-index: 50;
-  background: rgba(6, 12, 24, 0.88);
+  position: fixed;
+  right: 20px;
+  top: 16px;
+  width: 184px;
+  z-index: 150;
+  background: rgba(6, 12, 24, 0.92);
   border: 1.5px solid rgba(0, 229, 255, 0.55);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.2);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 229, 255, 0.25);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-radius: 14px;
-  padding: 8px 14px 10px;
+  padding: 8px 12px 10px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -983,8 +984,28 @@ html, body {
 .flying-card-inner .person-meta-content { height: auto; margin-bottom: 8px; transform: translateZ(2px); }
 .flying-card-inner .person-name-text { font-size: 1.7rem; margin-bottom: 6px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
 .flying-card-inner .person-role-text { font-size: 1.05rem; margin-bottom: 8px; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
-.flying-card-inner .person-tags-wrap { height: auto !important; max-height: none !important; gap: 6px; transform: translateZ(2px); }
-.flying-card-inner .person-tag-pill { font-size: 0.82rem; padding: 3px 10px; border-radius: 4px; max-width: none !important; }
+.flying-card-inner .person-tags-wrap {
+  height: auto !important;
+  max-height: none !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 5px 6px !important;
+  overflow: visible !important;
+  margin-top: 4px;
+  transform: translateZ(2px);
+}
+.flying-card-inner .person-tag-pill {
+  font-size: 0.74rem !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  line-height: 1.25;
+}
 
 /* Track Switcher (1트랙 / 2트랙) */
 .hud-track-switcher {

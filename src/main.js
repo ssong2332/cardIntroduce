@@ -248,14 +248,6 @@ function spotlightTrack1FullRoster() {
       });
     });
 
-    // Banner placed well above cards to prevent overlap
-    const bannerEl = document.createElement('div');
-    bannerEl.className = 'spotlight-team-banner team-1-banner';
-    bannerEl.textContent = '1팀 (6인 라인업 순차 공개)';
-    bannerEl.style.left = `${centerX}px`;
-    bannerEl.style.top = `${centerY - 220}px`;
-    flyingCardsLayer.appendChild(bannerEl);
-
     soundFx.playShuffle();
 
     // Fly out to center with integer pixel precision
@@ -265,7 +257,6 @@ function spotlightTrack1FullRoster() {
         item.wrap.style.top = `${Math.round(centerY)}px`;
         item.wrap.style.transform = 'translate(-50%, -50%) scale(0.75)';
       });
-      bannerEl.classList.add('visible');
     });
 
     // Requirement #3: Sequential 3D Flip from 0 (Leader) to 5 (Last Member) - slower, graceful pacing
@@ -284,7 +275,7 @@ function spotlightTrack1FullRoster() {
       currentSpotlight = {
         type: 'track1-full',
         wrappers,
-        bannerEl,
+        bannerEl: null,
         allMembers
       };
       isBusy = false;
@@ -429,9 +420,9 @@ function spotlightAllLeadersRow() {
     // Team Identification Banners (Placed higher to never overlap card badges!)
     const bannerTop = centerY - 210;
     const banners = [
-      { text: '1팀 (팀장)', cls: 'team-1-banner', x: centerX - 570 },
-      { text: '2팀 (팀장)', cls: 'team-2-banner', x: centerX - 60 },
-      { text: '3팀 (공동팀장)', cls: 'team-3-banner', x: centerX + 415 }
+      { text: '1팀 리더', cls: 'team-1-banner', x: centerX - 570 },
+      { text: '2팀 리더', cls: 'team-2-banner', x: centerX - 60 },
+      { text: '3팀 공동리더', cls: 'team-3-banner', x: centerX + 415 }
     ];
 
     const bannerEls = [];
@@ -817,6 +808,30 @@ function triggerDynamicDeckShuffle(nextButtonHtml, nextStepIndex) {
   }, 1150);
 }
 
+let autoAdvanceTimer = null;
+
+function clearAutoAdvanceTimer() {
+  if (autoAdvanceTimer) {
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = null;
+  }
+}
+
+/**
+ * Requirement #3: 팀장 공개를 제외하고는 5초가 지나면 자동으로 넘어가게 설정
+ */
+function scheduleAutoAdvance(delayMs = 5000) {
+  clearAutoAdvanceTimer();
+  // 팀장 공개 대기 상태(currentStep === 3)는 제외!
+  if (currentStep === 3) return;
+
+  autoAdvanceTimer = setTimeout(() => {
+    if (!isBusy && btnDealerAction && !btnDealerAction.disabled && btnDealerAction.style.display !== 'none') {
+      handleMasterStep();
+    }
+  }, delayMs);
+}
+
 /**
  * Master User-Driven Step Handler
  * Seamless Integrated Flow:
@@ -830,6 +845,7 @@ function triggerDynamicDeckShuffle(nextButtonHtml, nextStepIndex) {
  */
 async function handleMasterStep() {
   if (isBusy) return;
+  clearAutoAdvanceTimer();
 
   btnDealerAction.disabled = true;
 
@@ -839,6 +855,7 @@ async function handleMasterStep() {
     currentStep = 1;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>카드 정리 & 팀 빌딩 시작</span> ➔`;
+    scheduleAutoAdvance(5000);
     return;
   }
 
@@ -855,6 +872,7 @@ async function handleMasterStep() {
     currentStep = 3;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>팀장 안착</span> ➔`;
+    // Requirement #3: 팀장 공개는 사용자가 직접 넘길 때까지 5초 타이머 제외!
     return;
   }
 
@@ -875,6 +893,7 @@ async function handleMasterStep() {
     currentStep = 5;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>2팀 선발</span> ➔`;
+    scheduleAutoAdvance(5000);
     return;
   }
 
@@ -889,6 +908,7 @@ async function handleMasterStep() {
     currentStep = 6;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>3팀 선발</span> ➔`;
+    scheduleAutoAdvance(5000);
     return;
   }
 
@@ -903,6 +923,7 @@ async function handleMasterStep() {
     currentStep = 7;
     btnDealerAction.disabled = false;
     btnDealerAction.innerHTML = `<span>선발 안착</span> ➔`;
+    scheduleAutoAdvance(5000);
     return;
   }
 
@@ -943,6 +964,7 @@ async function handleMasterStep() {
         btnDealerAction.innerHTML = `<span>팀원 안착</span> ➔`;
       }
       currentStep++;
+      scheduleAutoAdvance(5000);
       return;
     }
 
@@ -1249,6 +1271,7 @@ function resetApplication() {
     teamRows.regular.innerHTML = '';
   });
 
+  clearAutoAdvanceTimer();
   flyingDimmer.classList.remove('active');
   flyingCardsLayer.innerHTML = '';
   teamFocusModal.classList.remove('active');
@@ -1325,6 +1348,26 @@ function init() {
 
   btnDealerAction.addEventListener('click', handleMasterStep);
   btnShowcaseOpen.addEventListener('click', () => openFocusShowcase(0));
+
+  // Requirement #2: 웹사이트 빈 곳 클릭 시 다음 단계로 진행 (버튼 클릭과 동일 효과)
+  window.addEventListener('click', (e) => {
+    if (
+      teamFocusModal.classList.contains('active') ||
+      adminModal.style.display === 'flex' ||
+      cardInspectModal.classList.contains('active')
+    ) {
+      return;
+    }
+
+    if (e.target.closest('button, input, select, textarea, .hud-tools-cluster, .track1-stash-dock, .cards-deck-row .poker-card-element')) {
+      return;
+    }
+
+    if (isBusy) return;
+    if (!btnDealerAction || btnDealerAction.disabled || btnDealerAction.style.display === 'none') return;
+
+    handleMasterStep();
+  });
 
   if (hudTrackLabel) {
     hudTrackLabel.textContent = '2026 TEAM BUILDING';

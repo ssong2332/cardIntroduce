@@ -17,8 +17,8 @@ export const track1Config = {
       leaders: [
         {
           id: "t1-l-1",
-          name: "이준호",
-          role: "Front end",
+          name: "김현서",
+          role: "기획",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Junho&backgroundColor=b6e3f4",
           tags: ["Team Lead", "React", "Next.js"],
           cardTier: "leader"
@@ -30,8 +30,8 @@ export const track1Config = {
   remainingPool: [
     {
       id: "t1-r-1",
-      name: "송하늘",
-      role: "기획 & 디자인",
+      name: "김경진",
+      role: "백엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Haneul&backgroundColor=ffd5dc",
       tags: ["Figma", "Design System"],
       cardTier: "regular",
@@ -39,8 +39,8 @@ export const track1Config = {
     },
     {
       id: "t1-r-2",
-      name: "강민석",
-      role: "백엔드",
+      name: "김민종",
+      role: "프론트엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Minseok&backgroundColor=c0aede",
       tags: ["Java", "Spring Boot"],
       cardTier: "regular",
@@ -48,8 +48,8 @@ export const track1Config = {
     },
     {
       id: "t1-r-3",
-      name: "오세진",
-      role: "풀스택",
+      name: "김수연",
+      role: "기획",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Sejin&backgroundColor=d1d4f9",
       tags: ["NestJS", "PostgreSQL"],
       cardTier: "regular",
@@ -57,8 +57,8 @@ export const track1Config = {
     },
     {
       id: "t1-r-4",
-      name: "한예슬",
-      role: "프론트엔드",
+      name: "박수홍",
+      role: "백엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Yeseul&backgroundColor=ffd5dc",
       tags: ["UI/UX", "Tailwind"],
       cardTier: "regular",
@@ -66,8 +66,8 @@ export const track1Config = {
     },
     {
       id: "t1-r-5",
-      name: "임시완",
-      role: "DevOps",
+      name: "이준호",
+      role: "백엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Siwan&backgroundColor=b6e3f4",
       tags: ["Cloud", "Kubernetes", "AWS"],
       cardTier: "regular",
@@ -95,7 +95,7 @@ export const track2Config = {
         {
           id: "l-1",
           name: "박성수",
-          role: "Front end",
+          role: "프론트엔드",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Minjun&backgroundColor=b6e3f4",
           tags: ["Project Lead", "React", "Node.js"],
           cardTier: "leader"
@@ -161,7 +161,7 @@ export const track2Config = {
         {
           id: "l-3a",
           name: "박정은",
-          role: "Front end",
+          role: "프론트엔드",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Seoyeon&backgroundColor=b6e3f4",
           tags: ["AI", "LLM", "Python"],
           cardTier: "leader",
@@ -170,7 +170,7 @@ export const track2Config = {
         {
           id: "l-3b",
           name: "김동현",
-          role: "Back end",
+          role: "백엔드",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Subin&backgroundColor=d1d4f9",
           tags: ["Cloud", "Docker", "DevOps"],
           cardTier: "leader",
@@ -181,7 +181,7 @@ export const track2Config = {
         {
           id: "p-5",
           name: "김서진",
-          role: "Front end",
+          role: "프론트엔드",
           avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Jaewon&backgroundColor=ffd5dc",
           tags: ["Python", "Pandas", "SQL"],
           cardTier: "priority"
@@ -201,7 +201,7 @@ export const track2Config = {
     {
       id: "r-1",
       name: "이수연",
-      role: "풀스택",
+      role: "기획",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Suzy&backgroundColor=ffd5dc",
       tags: ["Node.js", "React"],
       cardTier: "regular",
@@ -210,7 +210,7 @@ export const track2Config = {
     {
       id: "r-2",
       name: "유지효",
-      role: "DevOps & 인프라",
+      role: "프론트엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Joohyuk&backgroundColor=b6e3f4",
       tags: ["AWS", "GitHub Actions"],
       cardTier: "regular",
@@ -219,7 +219,7 @@ export const track2Config = {
     {
       id: "r-3",
       name: "홍지원",
-      role: "QA & 프로덕트",
+      role: "백엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Taeri&backgroundColor=c0aede",
       tags: ["QA", "Product"],
       cardTier: "regular",
@@ -228,20 +228,11 @@ export const track2Config = {
     {
       id: "r-4",
       name: "문서연",
-      role: "기획",
+      role: "프론트엔드",
       avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Taeri&backgroundColor=c0aede",
       tags: ["QA", "Product"],
       cardTier: "regular",
       targetTeamId: "team-3"
-    },
-    {
-      id: "r-5",
-      name: "조현우",
-      role: "백엔드",
-      avatar: "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Hyunwoo&backgroundColor=b6e3f4",
-      tags: ["Python", "FastAPI"],
-      cardTier: "regular",
-      targetTeamId: "team-2"
     }
   ]
 };
