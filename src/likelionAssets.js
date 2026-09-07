@@ -168,18 +168,21 @@ export function getCardFrontHtml(member, trackTheme = 'track2') {
   const tagCount = rawTags.length;
   const tagCountClass = tagCount <= 2 ? 'tags-few' : (tagCount <= 4 ? 'tags-normal' : 'tags-many');
 
-  // 스택이 5개 이상으로 많을 때는 상위 3개 스택 + '+N' 축약으로 깔끔하게 표시
-  let displayedTags = rawTags;
-  let morePillHtml = '';
-  if (tagCount > 4) {
-    displayedTags = rawTags.slice(0, 3);
-    const remaining = rawTags.slice(3);
-    morePillHtml = `<span class="person-tag-pill tag-more-pill" title="${remaining.join(', ')}">+${remaining.length}</span>`;
-  }
+  let tagsHtml = '';
+  if (tagCount <= 2) {
+    // 1~2개: 모든 뷰에서 100% 큼직하고 온전하게 표시
+    tagsHtml = rawTags.map(t => `<span class="person-tag-pill">${t}</span>`).join('');
+  } else {
+    // 3개 이상: 앞 2개는 테이블 및 대형 뷰 공통 온전한 단어 표시
+    const firstTwo = rawTags.slice(0, 2).map(t => `<span class="person-tag-pill">${t}</span>`).join('');
+    // 3번째 이후 태그: 대형 뷰(스포트라이트, 쇼케이스, 3D)에서는 2줄로 모두 표시, 테이블 소형 뷰에서는 숨김
+    const rest = rawTags.slice(2);
+    const restHtml = rest.map(t => `<span class="person-tag-pill tag-extra-pill">${t}</span>`).join('');
+    // 테이블 소형 뷰(118px)에서만 나타나는 '+N' 스마트 축약 배지
+    const tableMoreHtml = `<span class="person-tag-pill tag-more-pill table-only-pill" title="${rest.join(', ')}">+${rest.length}</span>`;
 
-  const tagsHtml = displayedTags
-    .map(t => `<span class="person-tag-pill">${t}</span>`)
-    .join('') + morePillHtml;
+    tagsHtml = firstTwo + restHtml + tableMoreHtml;
+  }
 
   return `
     <div class="card-face poker-card-front ${tierClass} ${themeClass}" data-member-id="${member.id}">

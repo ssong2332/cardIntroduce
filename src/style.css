@@ -899,22 +899,41 @@ html, body {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 56px;
+  max-width: 62px;
 }
 
 .tags-few .person-tag-pill {
   font-size: 0.60rem;
   font-weight: 700;
   padding: 2px 7px;
-  max-width: 72px;
+  max-width: 76px;
 }
 
 .tag-more-pill {
-  background: rgba(255, 119, 16, 0.2) !important;
+  background: rgba(255, 119, 16, 0.22) !important;
   border-color: rgba(255, 119, 16, 0.65) !important;
   color: #fed7aa !important;
   font-weight: 800 !important;
   cursor: help;
+}
+
+/* Smart Responsive Tags: Hide extra tags on small table cards (118px), show full on hero/modal views */
+.table-only-pill {
+  display: none !important;
+}
+
+.cards-deck-row .tag-extra-pill {
+  display: none !important;
+}
+
+.cards-deck-row .table-only-pill {
+  display: inline-flex !important;
+}
+
+.flying-card-inner .tag-extra-pill,
+.focus-body-cards .tag-extra-pill,
+.inspect-card-stage .tag-extra-pill {
+  display: inline-flex !important;
 }
 
 .card-sheen-overlay {
@@ -1413,5 +1432,154 @@ html, body {
 /* Toast Message (Permanently Hidden per User Request) */
 .toast-msg {
   display: none !important;
+}
+
+/* ==========================================================================
+   ONBOARDING CLICK HINT (Subtle glowing pulse for initial user guidance)
+   ========================================================================== */
+.onboarding-click-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: rgba(18, 18, 22, 0.78);
+  border: 1px solid rgba(255, 119, 16, 0.45);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 119, 16, 0.2);
+  color: #fed7aa;
+  font-family: var(--font-brand);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  pointer-events: none;
+  z-index: 1200;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+
+.onboarding-click-hint.visible {
+  opacity: 1;
+  visibility: visible;
+  animation: hintPulseGlow 2.4s ease-in-out infinite;
+}
+
+.hint-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FF7710;
+  box-shadow: 0 0 10px #FF7710;
+  animation: dotPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes hintPulseGlow {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 14px rgba(255, 119, 16, 0.2);
+    border-color: rgba(255, 119, 16, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.9), 0 0 24px rgba(255, 119, 16, 0.55);
+    border-color: rgba(255, 119, 16, 0.85);
+  }
+}
+
+@keyframes dotPulse {
+  0% { transform: scale(0.85); opacity: 0.6; }
+  100% { transform: scale(1.35); opacity: 1; }
+}
+
+/* ==========================================================================
+   FINALE CELEBRATION BANNER (Complete Roster Finale)
+   ========================================================================== */
+.finale-celebration-banner {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 28px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(18, 16, 22, 0.96) 0%, rgba(10, 8, 14, 0.98) 100%);
+  border: 1.5px solid rgba(255, 119, 16, 0.7);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.95), 0 0 30px rgba(255, 119, 16, 0.45);
+  pointer-events: none;
+  z-index: 1500;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.9, 0.25, 1), visibility 0.5s ease;
+  backdrop-filter: blur(16px);
+}
+
+.finale-celebration-banner.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.finale-banner-badge {
+  font-family: var(--font-brand);
+  font-size: 0.68rem;
+  font-weight: 900;
+  color: #0c0a10;
+  background: linear-gradient(90deg, #fef08a 0%, #FF7710 100%);
+  padding: 2px 10px;
+  border-radius: 999px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.finale-banner-title {
+  font-family: var(--font-brand);
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(255, 119, 16, 0.5);
+  letter-spacing: 0.3px;
+}
+
+.finale-banner-sub {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.2px;
+}
+
+/* Deck Empty Visual Feedback */
+.real-deck-stack.is-empty {
+  opacity: 0.32;
+  filter: grayscale(0.6);
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+/* Team Showcase Trigger Hover Glow */
+.team-felt-header {
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+
+.team-felt-header:hover {
+  transform: translateY(-2px);
+}
+
+.team-felt-header:hover .team-showcase-trigger {
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 8px #FF7710);
+}
+
+.team-showcase-trigger {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.9em;
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.25, 1), filter 0.25s ease;
 }
 

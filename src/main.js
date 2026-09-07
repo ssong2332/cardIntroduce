@@ -26,6 +26,8 @@ const track1StashCards = document.getElementById('track1-stash-cards');
 const btnDealerAction = document.getElementById('btn-dealer-action');
 const btnShowcaseOpen = document.getElementById('btn-showcase-open');
 const hudTrackLabel = document.getElementById('hud-track-label');
+const onboardingClickHint = document.getElementById('onboarding-click-hint');
+const finaleCelebrationBanner = document.getElementById('finale-celebration-banner');
 
 // Flying Cards Layer
 const flyingDimmer = document.getElementById('flying-dimmer');
@@ -871,6 +873,11 @@ async function handleMasterStep() {
   if (isBusy) return;
   clearAutoAdvanceTimer();
 
+  // Hide initial onboarding hint once user starts interaction
+  if (onboardingClickHint) {
+    onboardingClickHint.classList.remove('visible');
+  }
+
   btnDealerAction.disabled = true;
 
   // ================= STAGE 1: 1트랙 6명 전체 순차 공개 =================
@@ -999,6 +1006,16 @@ async function handleMasterStep() {
     btnDealerAction.style.display = 'none';
     btnShowcaseOpen.style.display = 'inline-flex';
 
+    if (finaleCelebrationBanner) {
+      finaleCelebrationBanner.classList.add('visible');
+      soundFx.playSnap();
+      particleEngine.spawnBurst(window.innerWidth / 2, window.innerHeight * 0.35, '#FF7710', 45);
+      setTimeout(() => {
+        particleEngine.spawnBurst(window.innerWidth / 2 - 220, window.innerHeight * 0.32, '#00e5ff', 35);
+        particleEngine.spawnBurst(window.innerWidth / 2 + 220, window.innerHeight * 0.32, '#f59e0b', 35);
+      }, 250);
+    }
+    
     soundFx.playFanfare();
     particleEngine.celebrate(4500);
     return;
@@ -1278,6 +1295,14 @@ function resetApplication() {
 
   if (hudTrackLabel) {
     hudTrackLabel.textContent = '2026 TEAM BUILDING';
+  }
+
+  // Reset Onboarding hint & Finale celebration banner
+  if (finaleCelebrationBanner) {
+    finaleCelebrationBanner.classList.remove('visible');
+  }
+  if (onboardingClickHint) {
+    onboardingClickHint.classList.add('visible');
   }
 
   // Reset Track 1 corner stash dock
